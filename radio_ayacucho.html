@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Radio digital de la Unidad Educativa Gran Mariscal de Ayacucho. Señal en vivo y transmisión multicanal.">
+<meta name="theme-color" content="#05180F">
+<title>Radio Digital — U.E. Gran Mariscal de Ayacucho</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   PALETA INSTITUCIONAL
+   ============================================================ */
+:root{
+  --tinta:#05180F;
+  --bosque:#0B3524;
+  --selva:#14603C;
+  --brote:#2EA96A;
+  --senal:#7FE3A8;
+  --papel:#F1F4F0;
+  --tiza:#FFFFFF;
+  --texto:#1C2622;
+  --texto-suave:#5B6B63;
+  --linea:#DCE4DD;
+  --rojo-aire:#E03B3B;
+
+  --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --cuerpo:'Barlow','Segoe UI',system-ui,-apple-system,sans-serif;
+
+  --radio:10px;
+  --sombra:0 1px 2px rgba(5,24,15,.05), 0 8px 24px rgba(5,24,15,.06);
+  --ancho:1180px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  font-family:var(--cuerpo);
+  background:var(--papel);
+  color:var(--texto);
+  line-height:1.55;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+a{color:inherit}
+button{font-family:inherit}
+
+:focus-visible{
+  outline:3px solid var(--brote);
+  outline-offset:2px;
+  border-radius:4px;
+}
+
+/* Textura sutil de fondo, sin ruido visual */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background:
+    radial-gradient(900px 420px at 12% -8%, rgba(46,169,106,.10), transparent 70%),
+    radial-gradient(700px 380px at 92% 0%, rgba(20,96,60,.08), transparent 72%);
+  pointer-events:none; z-index:0;
+}
+body > *{position:relative; z-index:1}
+
+/* ============================================================
+   BARRA DE EMISORA (FIJA)
+   ============================================================ */
+.emisora{
+  position:sticky; top:0; z-index:60;
+  background:var(--tinta);
+  color:var(--tiza);
+  border-bottom:1px solid rgba(127,227,168,.22);
+  display:flex; align-items:center; gap:14px;
+  padding:9px clamp(12px,3vw,28px);
+  flex-wrap:wrap;
+}
+
+.estado{
+  display:flex; align-items:center; gap:9px;
+  font-family:var(--display);
+  font-weight:600; font-size:.95rem;
+  letter-spacing:.09em; text-transform:uppercase;
+  color:var(--senal);
+  white-space:nowrap;
+}
+
+.punto{
+  width:9px; height:9px; border-radius:50%;
+  background:var(--rojo-aire);
+  box-shadow:0 0 0 0 rgba(224,59,59,.65);
+  animation:latido 2s infinite;
+  flex:none;
+}
+@keyframes latido{
+  0%{box-shadow:0 0 0 0 rgba(224,59,59,.6)}
+  70%{box-shadow:0 0 0 10px rgba(224,59,59,0)}
+  100%{box-shadow:0 0 0 0 rgba(224,59,59,0)}
+}
+
+/* Onda pequeña de la barra */
+.onda-mini{
+  display:flex; align-items:flex-end; gap:2px;
+  height:16px; flex:none;
+}
+.onda-mini i{
+  display:block; width:2.5px; height:100%;
+  background:var(--brote);
+  border-radius:2px;
+  transform:scaleY(.22);
+  transform-origin:bottom;
+  transition:transform .12s linear, background .3s ease;
+}
+.emisora.sonando .onda-mini i{background:var(--senal)}
+
+.reloj{
+  margin-left:auto;
+  font-family:var(--display);
+  font-size:1rem; letter-spacing:.06em;
+  color:rgba(255,255,255,.62);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+.btn-senal{
+  background:var(--brote);
+  color:var(--tinta);
+  border:none;
+  padding:9px 22px 8px;
+  font-family:var(--display);
+  font-size:1rem; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase;
+  border-radius:999px;
+  cursor:pointer;
+  transition:transform .18s cubic-bezier(.2,.8,.3,1), background .2s ease, box-shadow .2s ease;
+  box-shadow:0 4px 14px rgba(46,169,106,.3);
+  white-space:nowrap;
+}
+.btn-senal:hover{background:var(--senal); transform:translateY(-1px)}
+.btn-senal:active{transform:translateY(1px)}
+.btn-senal[data-sonando="si"]{
+  background:transparent;
+  color:var(--senal);
+  box-shadow:inset 0 0 0 1.5px rgba(127,227,168,.55);
+}
+
+.aviso-senal{
+  width:100%;
+  font-size:.82rem;
+  color:#F6C6C6;
+  padding-top:2px;
+  display:none;
+}
+.aviso-senal.visible{display:block}
+
+/* ============================================================
+   ENCABEZADO
+   ============================================================ */
+.cabecera{
+  background:linear-gradient(105deg,var(--bosque) 0%,var(--selva) 52%,var(--bosque) 100%);
+  color:var(--tiza);
+  padding:16px clamp(12px,3vw,28px);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; flex-wrap:wrap;
+  border-bottom:1px solid rgba(127,227,168,.2);
+}
+
+.marca{display:flex; align-items:center; gap:14px; min-width:0}
+
+.sello{
+  width:54px; height:54px; flex:none;
+  border-radius:50%;
+  background:rgba(255,255,255,.96);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+  box-shadow:0 0 0 1.5px rgba(127,227,168,.5), 0 6px 18px rgba(0,0,0,.22);
+  font-family:var(--display);
+  font-size:.62rem; font-weight:700; letter-spacing:.08em;
+  color:var(--selva); text-align:center; line-height:1.1;
+  transition:transform .35s cubic-bezier(.2,.8,.3,1);
+}
+.sello:hover{transform:rotate(-4deg) scale(1.04)}
+.sello img{width:100%; height:100%; object-fit:cover; display:block}
+
+.marca h1{
+  font-family:var(--display);
+  font-size:clamp(1.15rem,3.1vw,1.55rem);
+  font-weight:700; line-height:1.05;
+  letter-spacing:.005em;
+}
+.marca p{
+  font-size:.82rem;
+  color:#BFE6D0;
+  letter-spacing:.04em;
+}
+
+.menu{display:flex; gap:4px; flex-wrap:wrap}
+.menu a{
+  text-decoration:none;
+  font-family:var(--display);
+  font-size:1rem; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase;
+  padding:7px 15px 6px;
+  border-radius:999px;
+  color:#D8EFE2;
+  position:relative;
+  transition:color .2s ease, background .2s ease;
+}
+.menu a::after{
+  content:""; position:absolute; left:15px; right:15px; bottom:3px;
+  height:1.5px; background:var(--senal);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .28s cubic-bezier(.2,.8,.3,1);
+}
+.menu a:hover{color:var(--tiza)}
+.menu a:hover::after{transform:scaleX(1)}
+
+/* ============================================================
+   CINTILLO
+   ============================================================ */
+.cintillo{
+  background:var(--tinta);
+  display:flex; align-items:stretch;
+  overflow:hidden;
+  height:34px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.cintillo-rotulo{
+  background:var(--brote);
+  color:var(--tinta);
+  display:flex; align-items:center;
+  padding:0 14px;
+  font-family:var(--display);
+  font-weight:700; font-size:.88rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  flex:none; z-index:2;
+}
+.cintillo-pista{
+  display:flex; align-items:center;
+  overflow:hidden; flex:1;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 94%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 3%,#000 94%,transparent);
+}
+.cintillo-grupo{
+  display:flex; align-items:center;
+  white-space:nowrap;
+  animation:desfile 34s linear infinite;
+  flex:none;
+}
+.cintillo-pista:hover .cintillo-grupo{animation-play-state:paused}
+.cintillo-item{
+  padding:0 26px;
+  font-size:.85rem;
+  color:rgba(255,255,255,.78);
+}
+.cintillo-item b{color:var(--senal); font-weight:600}
+@keyframes desfile{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-100%,0,0)}
+}
+
+/* ============================================================
+   PORTADA
+   ============================================================ */
+.portada{
+  position:relative;
+  color:var(--tiza);
+  padding:clamp(34px,7vw,72px) clamp(12px,3vw,28px) 0;
+  overflow:hidden;
+  background:var(--bosque);
+}
+.portada-fondo{
+  position:absolute; inset:0;
+  background-position:center; background-size:cover;
+  transform:scale(1.06);
+  animation:respirar 26s ease-in-out infinite alternate;
+  opacity:.5;
+}
+@keyframes respirar{
+  from{transform:scale(1.06) translate3d(0,0,0)}
+  to{transform:scale(1.13) translate3d(0,-1.2%,0)}
+}
+.portada::before{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(5,24,15,.78) 0%,rgba(5,24,15,.86) 55%,var(--papel) 100%);
+  z-index:1;
+}
+.portada-interior{
+  position:relative; z-index:2;
+  max-width:var(--ancho); margin:0 auto;
+}
+
+.portada h2{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(2.2rem,7.2vw,4.4rem);
+  line-height:.98;
+  letter-spacing:-.005em;
+  max-width:16ch;
+}
+.portada .bajada{
+  margin-top:14px;
+  max-width:52ch;
+  font-size:clamp(.95rem,1.7vw,1.06rem);
+  color:#C9E6D6;
+}
+
+/* Onda grande */
+.onda{
+  display:flex; align-items:flex-end; gap:3px;
+  height:78px; margin-top:30px;
+  padding-bottom:2px;
+}
+.onda i{
+  display:block; flex:1; height:100%;
+  min-width:2px; max-width:9px;
+  background:linear-gradient(180deg,var(--senal),var(--selva));
+  border-radius:3px 3px 1px 1px;
+  transform:scaleY(.12);
+  transform-origin:bottom;
+  transition:transform .13s linear;
+  opacity:.85;
+}
+
+/* Tarjetas de estado de la parrilla */
+.tablero{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:1px;
+  background:rgba(127,227,168,.2);
+  border:1px solid rgba(127,227,168,.2);
+  border-radius:var(--radio);
+  overflow:hidden;
+  margin-top:26px;
+  transform:translateY(22px);
+}
+.tablero-celda{
+  background:rgba(5,24,15,.55);
+  backdrop-filter:blur(6px);
+  padding:14px 18px;
+}
+.tablero-celda dt{
+  font-family:var(--display);
+  font-size:.82rem; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--brote);
+  margin-bottom:2px;
+}
+.tablero-celda dd{
+  font-family:var(--display);
+  font-size:1.35rem; font-weight:600;
+  letter-spacing:.01em;
+  color:var(--tiza);
+}
+.tablero-celda dd small{
+  display:block;
+  font-family:var(--cuerpo);
+  font-size:.8rem; font-weight:400;
+  color:#A9CDBA;
+  letter-spacing:0;
+}
+
+/* ============================================================
+   CUERPO
+   ============================================================ */
+.contenedor{
+  max-width:var(--ancho);
+  margin:44px auto 0;
+  padding:0 clamp(12px,3vw,28px);
+  display:grid;
+  grid-template-columns:minmax(0,2.25fr) minmax(0,1fr);
+  gap:22px;
+  align-items:start;
+}
+
+.bloque{
+  background:var(--tiza);
+  border:1px solid var(--linea);
+  border-radius:var(--radio);
+  padding:20px;
+  box-shadow:var(--sombra);
+}
+.bloque + .bloque{margin-top:22px}
+
+.bloque-titulo{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:12px; flex-wrap:wrap;
+  padding-bottom:10px;
+  margin-bottom:16px;
+  border-bottom:1px solid var(--linea);
+}
+.bloque-titulo h3{
+  font-family:var(--display);
+  font-size:1.35rem; font-weight:700;
+  letter-spacing:.02em;
+  color:var(--bosque);
+}
+.bloque-titulo span{
+  font-size:.8rem;
+  color:var(--texto-suave);
+}
+
+/* Pestañas de canal */
+.canales{
+  display:flex; gap:8px; flex-wrap:wrap;
+  margin-bottom:14px;
+}
+.canal{
+  background:transparent;
+  border:1px solid var(--linea);
+  color:var(--texto-suave);
+  padding:8px 17px 7px;
+  border-radius:999px;
+  font-family:var(--display);
+  font-size:.98rem; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase;
+  cursor:pointer;
+  transition:all .22s cubic-bezier(.2,.8,.3,1);
+}
+.canal:hover{border-color:var(--brote); color:var(--selva)}
+.canal[aria-selected="true"]{
+  background:var(--bosque);
+  border-color:var(--bosque);
+  color:var(--tiza);
+  box-shadow:0 5px 14px rgba(11,53,36,.22);
+}
+
+.pantalla{
+  position:relative;
+  padding-bottom:56.25%;
+  border-radius:8px;
+  overflow:hidden;
+  background:#000;
+  border:1px solid var(--linea);
+}
+.pantalla iframe{
+  position:absolute; inset:0;
+  width:100%; height:100%; border:0;
+  animation:aparecer .45s ease;
+}
+@keyframes aparecer{from{opacity:0}to{opacity:1}}
+
+.pantalla-vacia{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:6px; text-align:center; padding:20px;
+  color:#8FA79A;
+  background:
+    repeating-linear-gradient(45deg,#0A120E 0 14px,#0D1712 14px 28px);
+}
+.pantalla-vacia strong{
+  font-family:var(--display);
+  font-size:1.1rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--brote);
+}
+.pantalla-vacia span{font-size:.84rem; max-width:40ch}
+
+.pie-pantalla{
+  margin-top:12px;
+  padding:10px 14px;
+  background:var(--papel);
+  border-left:3px solid var(--brote);
+  border-radius:4px;
+  font-size:.86rem;
+  display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  color:var(--texto-suave);
+}
+.pie-pantalla b{color:var(--bosque); font-weight:600}
+
+/* Parrilla */
+.franja{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:14px; align-items:center;
+  padding:12px 14px;
+  border-radius:8px;
+  background:var(--papel);
+  border:1px solid transparent;
+  margin-bottom:9px;
+  transition:border-color .25s ease, background .25s ease, transform .25s cubic-bezier(.2,.8,.3,1);
+}
+.franja:hover{transform:translateX(3px)}
+.franja-hora{
+  font-family:var(--display);
+  font-size:1.05rem; font-weight:600;
+  color:var(--selva);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.franja-nombre{font-size:.92rem}
+.franja-marca{
+  display:block;
+  font-family:var(--display);
+  font-size:.75rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--texto-suave);
+}
+.franja[data-activa="si"]{
+  background:linear-gradient(100deg,rgba(46,169,106,.13),rgba(46,169,106,.04));
+  border-color:rgba(46,169,106,.45);
+}
+.franja[data-activa="si"] .franja-marca{color:var(--brote); font-weight:600}
+.franja[data-activa="si"] .franja-hora{color:var(--bosque)}
+
+/* ============================================================
+   CRÉDITOS
+   ============================================================ */
+.creditos{
+  max-width:var(--ancho);
+  margin:22px auto 40px;
+  padding:0 clamp(12px,3vw,28px);
+}
+.creditos-rejilla{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+}
+.credito{
+  background:var(--tiza);
+  border:1px solid var(--linea);
+  border-top:2px solid var(--brote);
+  border-radius:var(--radio);
+  padding:18px 20px;
+  box-shadow:var(--sombra);
+  opacity:0; transform:translateY(16px);
+  transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.3,1);
+}
+.credito.visible{opacity:1; transform:none}
+.credito h4{
+  font-family:var(--display);
+  font-size:1.08rem; font-weight:700;
+  letter-spacing:.03em;
+  color:var(--bosque);
+  margin-bottom:8px;
+}
+.credito p{font-size:.9rem; color:var(--texto-suave)}
+.credito p b{color:var(--texto); font-weight:600}
+.credito ul{list-style:none; font-size:.9rem; color:var(--texto-suave)}
+.credito li{padding:3px 0 3px 14px; position:relative}
+.credito li::before{
+  content:""; position:absolute; left:0; top:12px;
+  width:6px; height:2px; background:var(--brote);
+}
+
+/* ============================================================
+   PIE
+   ============================================================ */
+.pie{
+  background:var(--tinta);
+  color:#9FBFAE;
+  text-align:center;
+  padding:26px 20px;
+  border-top:1px solid rgba(127,227,168,.22);
+}
+.pie p{font-size:.84rem}
+.pie .firma{
+  font-family:var(--display);
+  font-size:.82rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--brote);
+  margin-top:8px;
+}
+
+/* ============================================================
+   ENTRADA ORQUESTADA
+   ============================================================ */
+.entra{opacity:0; transform:translateY(14px)}
+.cargado .entra{
+  opacity:1; transform:none;
+  transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.3,1);
+}
+.cargado .entra[data-orden="1"]{transition-delay:.05s}
+.cargado .entra[data-orden="2"]{transition-delay:.15s}
+.cargado .entra[data-orden="3"]{transition-delay:.25s}
+.cargado .entra[data-orden="4"]{transition-delay:.35s}
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width:920px){
+  .contenedor{grid-template-columns:1fr; margin-top:34px}
+  .cabecera{flex-direction:column; align-items:flex-start}
+  .menu{width:100%}
+  .menu a{padding-left:0; padding-right:18px}
+  .menu a::after{left:0; right:18px}
+}
+
+@media (max-width:620px){
+  .emisora{gap:10px; padding:8px 14px}
+  .estado{font-size:.85rem}
+  .onda-mini{display:none}
+  .reloj{font-size:.9rem}
+  .btn-senal{width:100%; order:5; padding:11px 18px}
+  .onda{height:52px; gap:2px}
+  .portada h2{max-width:100%}
+  .tablero{transform:translateY(20px)}
+  .bloque{padding:16px}
+  .franja{grid-template-columns:1fr; gap:3px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .portada-fondo{transform:scale(1.02)}
+  .entra,.credito{opacity:1; transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     BARRA DE EMISORA
+     ============================================================ -->
+<div class="emisora" id="emisora">
+  <div class="estado"><span class="punto"></span>Al aire</div>
+  <div class="onda-mini" id="ondaMini" aria-hidden="true"></div>
+  <div class="reloj" id="reloj">--:--</div>
+  <button class="btn-senal" id="btnSenal" data-sonando="no">Escuchar la señal</button>
+  <audio id="senal" preload="none"></audio>
+  <p class="aviso-senal" id="avisoSenal" role="status"></p>
+</div>
+
+<!-- ============================================================
+     ENCABEZADO
+     ============================================================ -->
+<header class="cabecera">
+  <div class="marca">
+    <div class="sello" id="selloLogo">LOGO</div>
+    <div>
+      <h1>U.E. Gran Mariscal de Ayacucho</h1>
+      <p>Radio digital estudiantil</p>
+    </div>
+  </div>
+  <div class="marca">
+    <nav class="menu">
+      <a href="#en-vivo">En vivo</a>
+      <a href="#parrilla">Horarios</a>
+      <a href="#creditos">Créditos</a>
+    </nav>
+    <div class="sello" id="selloEscudo">ESCUDO</div>
+  </div>
+</header>
+
+<!-- ============================================================
+     CINTILLO
+     ============================================================ -->
+<div class="cintillo">
+  <div class="cintillo-rotulo">Señal</div>
+  <div class="cintillo-pista" id="cintilloPista"></div>
+</div>
+
+<!-- ============================================================
+     PORTADA
+     ============================================================ -->
+<section class="portada">
+  <div class="portada-fondo" id="portadaFondo"></div>
+  <div class="portada-interior">
+    <h2 class="entra" data-orden="1">La voz del colegio, en línea</h2>
+    <p class="bajada entra" data-orden="2">Transmisión en vivo y contenidos audiovisuales producidos por estudiantes y docentes de la unidad educativa.</p>
+
+    <div class="onda entra" data-orden="3" id="onda" aria-hidden="true"></div>
+
+    <dl class="tablero entra" data-orden="4">
+      <div class="tablero-celda">
+        <dt>Ahora</dt>
+        <dd id="bloqueActual">Fuera de horario<small id="bloqueActualHora">La señal continua sigue disponible</small></dd>
+      </div>
+      <div class="tablero-celda">
+        <dt>A continuación</dt>
+        <dd id="bloqueSiguiente">—<small id="bloqueSiguienteHora">&nbsp;</small></dd>
+      </div>
+      <div class="tablero-celda">
+        <dt>Canales</dt>
+        <dd>Tres<small>TikTok, YouTube y Kick</small></dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============================================================
+     CUERPO
+     ============================================================ -->
+<div class="contenedor">
+
+  <main id="en-vivo">
+    <div class="bloque">
+      <div class="bloque-titulo">
+        <h3>Transmisión multicanal</h3>
+        <span>Elige el canal donde quieres ver la emisión</span>
+      </div>
+
+      <div class="canales" role="tablist" aria-label="Canales de transmisión">
+        <button class="canal" role="tab" aria-selected="true"  data-canal="tiktok">TikTok</button>
+        <button class="canal" role="tab" aria-selected="false" data-canal="youtube">YouTube</button>
+        <button class="canal" role="tab" aria-selected="false" data-canal="kick">Kick</button>
+      </div>
+
+      <div class="pantalla" id="pantalla"></div>
+
+      <div class="pie-pantalla">
+        <span>Canal en pantalla: <b id="canalActual">TikTok</b></span>
+        <span>Emisión oficial de la unidad educativa</span>
+      </div>
+    </div>
+  </main>
+
+  <aside>
+    <div class="bloque" id="parrilla">
+      <div class="bloque-titulo">
+        <h3>Horarios</h3>
+      </div>
+      <div id="listaFranjas"></div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- ============================================================
+     CRÉDITOS
+     ============================================================ -->
+<section class="creditos" id="creditos">
+  <div class="creditos-rejilla">
+    <div class="credito">
+      <h4>Dirección general</h4>
+      <p><b>Lic. Daniel Vega Tito</b><br>Director</p>
+    </div>
+    <div class="credito">
+      <h4>Docentes colaboradores</h4>
+      <p>Plantel docente participante de la unidad educativa.</p>
+    </div>
+    <div class="credito">
+      <h4>Soporte técnico y desarrollo</h4>
+      <ul>
+        <li>Equipo de ingeniería en sistemas</li>
+        <li>Producción y operación de la señal</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PIE
+     ============================================================ -->
+<footer class="pie">
+  <p>&copy; 2026 Unidad Educativa «Gran Mariscal de Ayacucho» — Plataforma de radio digital institucional</p>
+  <p class="firma">Desarrollo IRRA</p>
+</footer>
+
+<script>
+/* ==============================================================
+   CONFIGURACIÓN — LO ÚNICO QUE DEBES EDITAR
+   ==============================================================
+   Sube las imágenes a tu repositorio de GitHub y pega aquí la ruta.
+
+   OPCIÓN A (recomendada, si usas GitHub Pages):
+     ruta relativa dentro del repositorio.
+     Ejemplo de forma: "img/logo.png"
+
+   OPCIÓN B (enlace directo desde GitHub):
+     abre el archivo en GitHub, botón "Raw", y copia la barra
+     de direcciones. Tiene esta forma:
+     https://raw.githubusercontent.com/USUARIO/REPOSITORIO/main/img/logo.png
+
+   Si dejas un campo vacío (""), la página sigue funcionando y
+   muestra un marcador de posición en su lugar.
+   ============================================================== */
+const CONFIG = {
+
+  /* --- Imágenes --- */
+  logo:   "",   // logo del proyecto de radio
+  escudo: "",   // escudo institucional
+  fondo:  "",   // fotografía de fondo de la portada
+
+  /* --- Señal de audio continua (URL del streaming .mp3 / .aac) --- */
+  audio:  "",
+
+  /* --- Enlaces de video en vivo --- */
+  tiktok:  "",  // https://www.tiktok.com/player/v1/live?username=TU_USUARIO
+  youtube: "",  // https://www.youtube.com/embed/live_stream?channel=ID_DEL_CANAL
+  kick:    "",  // https://player.kick.com/TU_CANAL
+
+  /* --- Horarios de transmisión --- */
+  horarios: [
+    { inicio:"08:30", fin:"10:00", nombre:"Bloque mañana" },
+    { inicio:"10:15", fin:"12:00", nombre:"Bloque medio día" },
+    { inicio:"14:30", fin:"16:00", nombre:"Bloque tarde" }
+  ],
+
+  /* --- Textos del cintillo --- */
+  cintillo: [
+    "Plataforma oficial de transmisión de la <b>Unidad Educativa Gran Mariscal de Ayacucho</b>",
+    "Emisión simultánea en <b>TikTok</b>, <b>YouTube</b> y <b>Kick</b>",
+    "Producción a cargo de estudiantes y docentes"
+  ]
+};
+
+/* ==============================================================
+   A PARTIR DE AQUÍ NO ES NECESARIO MODIFICAR NADA
+   ============================================================== */
+(function(){
+  "use strict";
+
+  const $  = (s)=>document.querySelector(s);
+  const $$ = (s)=>Array.from(document.querySelectorAll(s));
+  const menosMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Imágenes con respaldo ---------- */
+  function ponerImagen(contenedor, ruta, etiqueta){
+    if(!ruta) return;
+    const img = new Image();
+    img.alt = etiqueta;
+    img.src = ruta;
+    img.onload = ()=>{ contenedor.textContent = ""; contenedor.appendChild(img); };
+    img.onerror = ()=>{ contenedor.textContent = etiqueta; };
+  }
+  ponerImagen($("#selloLogo"),   CONFIG.logo,   "LOGO");
+  ponerImagen($("#selloEscudo"), CONFIG.escudo, "ESCUDO");
+  if(CONFIG.fondo) $("#portadaFondo").style.backgroundImage = `url('${CONFIG.fondo}')`;
+
+  /* ---------- Cintillo (duplicado para giro continuo) ---------- */
+  (function cintillo(){
+    const pista = $("#cintilloPista");
+    const texto = CONFIG.cintillo.map(t=>`<span class="cintillo-item">${t}</span>`).join("");
+    for(let i=0;i<2;i++){
+      const g = document.createElement("div");
+      g.className = "cintillo-grupo";
+      g.innerHTML = texto;
+      if(i===1) g.setAttribute("aria-hidden","true");
+      pista.appendChild(g);
+    }
+  })();
+
+  /* ---------- Reloj ---------- */
+  const reloj = $("#reloj");
+  function verHora(){
+    const d = new Date();
+    reloj.textContent = String(d.getHours()).padStart(2,"0")+":"+
+                        String(d.getMinutes()).padStart(2,"0")+":"+
+                        String(d.getSeconds()).padStart(2,"0");
+  }
+  verHora(); setInterval(verHora,1000);
+
+  /* ---------- Horarios y bloque en curso ---------- */
+  const enMinutos = (hhmm)=>{ const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
+
+  function pintarHorarios(){
+    const lista  = $("#listaFranjas");
+    const ahora  = new Date();
+    const minuto = ahora.getHours()*60 + ahora.getMinutes();
+
+    let actual = null, siguiente = null;
+
+    lista.innerHTML = CONFIG.horarios.map(b=>{
+      const activa = minuto >= enMinutos(b.inicio) && minuto < enMinutos(b.fin);
+      if(activa) actual = b;
+      if(!siguiente && !activa && enMinutos(b.inicio) > minuto) siguiente = b;
+      return `
+        <div class="franja" data-activa="${activa?"si":"no"}">
+          <span class="franja-hora">${b.inicio} — ${b.fin}</span>
+          <span class="franja-nombre">${b.nombre}
+            <span class="franja-marca">${activa ? "En emisión" : "Programado"}</span>
+          </span>
+        </div>`;
+    }).join("");
+
+    if(actual){
+      $("#bloqueActual").firstChild.nodeValue = actual.nombre;
+      $("#bloqueActualHora").textContent = actual.inicio+" a "+actual.fin;
+    }else{
+      $("#bloqueActual").firstChild.nodeValue = "Fuera de horario";
+      $("#bloqueActualHora").textContent = "La señal continua sigue disponible";
+    }
+
+    const prox = siguiente || CONFIG.horarios[0];
+    $("#bloqueSiguiente").firstChild.nodeValue = prox.nombre;
+    $("#bloqueSiguienteHora").textContent = "Desde las "+prox.inicio;
+  }
+  pintarHorarios();
+  setInterval(pintarHorarios, 30000);
+
+  /* ---------- Ondas ---------- */
+  const onda     = $("#onda");
+  const ondaMini = $("#ondaMini");
+  const BARRAS = 44, BARRAS_MINI = 5;
+
+  for(let i=0;i<BARRAS;i++)      onda.appendChild(document.createElement("i"));
+  for(let i=0;i<BARRAS_MINI;i++) ondaMini.appendChild(document.createElement("i"));
+
+  const barras     = $$("#onda i");
+  const barrasMini = $$("#ondaMini i");
+  let sonando = false, t = 0, cuadro = null;
+
+  function animarOndas(){
+    t += sonando ? 0.09 : 0.028;
+    const fuerza = sonando ? 1 : 0.32;
+
+    barras.forEach((b,i)=>{
+      const v = Math.sin(t + i*0.42) * 0.5
+              + Math.sin(t*1.73 + i*0.19) * 0.32
+              + Math.sin(t*0.61 + i*0.87) * 0.18;
+      const alto = 0.1 + Math.abs(v) * 0.9 * fuerza;
+      b.style.transform = "scaleY("+alto.toFixed(3)+")";
+    });
+
+    barrasMini.forEach((b,i)=>{
+      const v = Math.abs(Math.sin(t*1.5 + i*0.9));
+      b.style.transform = "scaleY("+(0.2 + v*0.8*fuerza).toFixed(3)+")";
+    });
+
+    cuadro = requestAnimationFrame(animarOndas);
+  }
+
+  if(!menosMovimiento){
+    animarOndas();
+    document.addEventListener("visibilitychange", ()=>{
+      if(document.hidden){ cancelAnimationFrame(cuadro); cuadro = null; }
+      else if(!cuadro){ animarOndas(); }
+    });
+  }else{
+    barras.forEach(b=>b.style.transform="scaleY(.45)");
+    barrasMini.forEach(b=>b.style.transform="scaleY(.5)");
+  }
+
+  /* ---------- Reproductor de la señal ---------- */
+  const audio = $("#senal");
+  const btn   = $("#btnSenal");
+  const aviso = $("#avisoSenal");
+
+  function mostrarAviso(texto){
+    aviso.textContent = texto;
+    aviso.classList.add("visible");
+  }
+  function limpiarAviso(){
+    aviso.textContent = "";
+    aviso.classList.remove("visible");
+  }
+
+  function estadoReproduciendo(activo){
+    sonando = activo;
+    btn.dataset.sonando = activo ? "si" : "no";
+    btn.textContent = activo ? "Detener la señal" : "Escuchar la señal";
+    $("#emisora").classList.toggle("sonando", activo);
+  }
+
+  btn.addEventListener("click", ()=>{
+    if(!CONFIG.audio){
+      mostrarAviso("Falta configurar la dirección del streaming en el campo «audio».");
+      return;
+    }
+    if(!audio.src) audio.src = CONFIG.audio;
+
+    if(audio.paused){
+      btn.textContent = "Conectando…";
+      audio.play().then(()=>{
+        limpiarAviso();
+        estadoReproduciendo(true);
+      }).catch(()=>{
+        estadoReproduciendo(false);
+        mostrarAviso("No se pudo conectar con la señal. Revisa la dirección del streaming.");
+      });
+    }else{
+      audio.pause();
+      estadoReproduciendo(false);
+    }
+  });
+
+  audio.addEventListener("pause", ()=>estadoReproduciendo(false));
+  audio.addEventListener("playing", ()=>estadoReproduciendo(true));
+  audio.addEventListener("error", ()=>{
+    estadoReproduciendo(false);
+    mostrarAviso("La señal no está disponible en este momento.");
+  });
+
+  /* ---------- Canales de video ---------- */
+  const NOMBRES = { tiktok:"TikTok", youtube:"YouTube", kick:"Kick" };
+  const pantalla = $("#pantalla");
+
+  function verCanal(canal){
+    const url = CONFIG[canal];
+    if(url){
+      pantalla.innerHTML =
+        '<iframe src="'+url+'" title="Transmisión en vivo en '+NOMBRES[canal]+'" '+
+        'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+    }else{
+      pantalla.innerHTML =
+        '<div class="pantalla-vacia"><strong>Canal sin configurar</strong>'+
+        '<span>Pega la dirección de la transmisión de '+NOMBRES[canal]+
+        ' en el campo «'+canal+'» de la configuración.</span></div>';
+    }
+    $("#canalActual").textContent = NOMBRES[canal];
+  }
+
+  $$(".canal").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      $$(".canal").forEach(o=>o.setAttribute("aria-selected","false"));
+      b.setAttribute("aria-selected","true");
+      verCanal(b.dataset.canal);
+    });
+  });
+  verCanal("tiktok");
+
+  /* ---------- Aparición de créditos ---------- */
+  if("IntersectionObserver" in window && !menosMovimiento){
+    const obs = new IntersectionObserver((entradas)=>{
+      entradas.forEach((e,i)=>{
+        if(e.isIntersecting){
+          setTimeout(()=>e.target.classList.add("visible"), i*110);
+          obs.unobserve(e.target);
+        }
+      });
+    },{threshold:.2});
+    $$(".credito").forEach(c=>obs.observe(c));
+  }else{
+    $$(".credito").forEach(c=>c.classList.add("visible"));
+  }
+
+  /* ---------- Entrada de la portada ---------- */
+  requestAnimationFrame(()=>document.body.classList.add("cargado"));
+
+})();
+</script>
+
+</body>
+</html>
