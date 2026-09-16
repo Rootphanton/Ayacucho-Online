@@ -172,20 +172,47 @@ body > *{position:relative; z-index:1}
 
 .marca{display:flex; align-items:center; gap:14px; min-width:0}
 
+/* El logo se muestra con su forma real: no hay caja, no hay recorte.
+   Solo se fija el alto; el ancho lo decide la propia imagen.
+   Cambia --alto-logo si lo quieres más grande o más chico. */
 .sello{
-  width:54px; height:54px; flex:none;
-  border-radius:50%;
-  background:rgba(255,255,255,.96);
-  display:flex; align-items:center; justify-content:center;
-  overflow:hidden;
-  box-shadow:0 0 0 1.5px rgba(127,227,168,.5), 0 6px 18px rgba(0,0,0,.22);
+  --alto-logo:86px;
+  display:inline-flex; align-items:center;
+  flex:none;
+  width:auto; min-width:0;
+  height:var(--alto-logo);
+  padding:0; margin:0;
+  background:none;
+  border:none;
+  border-radius:0;
+  box-shadow:none;
+  overflow:visible;
   font-family:var(--display);
-  font-size:.62rem; font-weight:700; letter-spacing:.08em;
-  color:var(--selva); text-align:center; line-height:1.1;
+  font-size:.74rem; font-weight:700; letter-spacing:.12em;
+  color:#BFE6D0; text-align:center; line-height:1.1;
   transition:transform .35s cubic-bezier(.2,.8,.3,1);
 }
-.sello:hover{transform:rotate(-4deg) scale(1.04)}
-.sello img{width:100%; height:100%; object-fit:cover; display:block}
+.sello:hover{transform:scale(1.05)}
+
+.sello img{
+  display:block;
+  height:100%;
+  width:auto;          /* el ancho lo marca la proporción real del PNG */
+  max-width:none;
+  object-fit:contain;  /* nunca se recorta ni se deforma */
+  background:none;
+  border-radius:0;
+  /* La sombra sigue el contorno del PNG transparente, no un rectángulo */
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));
+}
+
+/* Solo se dibuja un recuadro punteado cuando todavía NO hay imagen.
+   En cuanto el PNG carga, desaparece por completo. */
+.sello:not(.con-imagen){
+  border:1px dashed rgba(127,227,168,.45);
+  border-radius:6px;
+  padding:0 14px;
+}
 
 .marca h1{
   font-family:var(--display);
@@ -584,9 +611,14 @@ body > *{position:relative; z-index:1}
 @media (max-width:920px){
   .contenedor{grid-template-columns:1fr; margin-top:34px}
   .cabecera{flex-direction:column; align-items:flex-start}
-  .menu{width:100%}
+  .cabecera > .marca:last-child{
+    width:100%;
+    justify-content:space-between;
+  }
+  .menu{width:auto}
   .menu a{padding-left:0; padding-right:18px}
   .menu a::after{left:0; right:18px}
+  .sello{--alto-logo:74px}
 }
 
 @media (max-width:620px){
@@ -600,6 +632,8 @@ body > *{position:relative; z-index:1}
   .tablero{transform:translateY(20px)}
   .bloque{padding:16px}
   .franja{grid-template-columns:1fr; gap:3px}
+  .sello{--alto-logo:64px}
+  .marca{gap:11px}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -632,7 +666,7 @@ body > *{position:relative; z-index:1}
      ============================================================ -->
 <header class="cabecera">
   <div class="marca">
-    <div class="sello" id="selloLogo">logo colegio Ayacucho 1.png</div>
+    <div class="sello" id="selloLogo">LOGO</div>
     <div>
       <h1>U.E. Gran Mariscal de Ayacucho</h1>
       <p>Radio digital estudiantil</p>
@@ -774,7 +808,7 @@ body > *{position:relative; z-index:1}
 const CONFIG = {
 
   /* --- Imágenes --- */
-  logo:   "logo colegio Ayacucho 1.png",  
+  logo:   "logo colegio Ayacucho 1.png",   // logo del proyecto de radio
   escudo: "",   // escudo institucional
   fondo:  "",   // fotografía de fondo de la portada
 
@@ -817,8 +851,15 @@ const CONFIG = {
     const img = new Image();
     img.alt = etiqueta;
     img.src = ruta;
-    img.onload = ()=>{ contenedor.textContent = ""; contenedor.appendChild(img); };
-    img.onerror = ()=>{ contenedor.textContent = etiqueta; };
+    img.onload = ()=>{
+      contenedor.textContent = "";
+      contenedor.appendChild(img);
+      contenedor.classList.add("con-imagen");
+    };
+    img.onerror = ()=>{
+      contenedor.textContent = etiqueta;
+      contenedor.classList.remove("con-imagen");
+    };
   }
   ponerImagen($("#selloLogo"),   CONFIG.logo,   "LOGO");
   ponerImagen($("#selloEscudo"), CONFIG.escudo, "ESCUDO");
