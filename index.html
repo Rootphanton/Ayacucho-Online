@@ -176,7 +176,7 @@ body > *{position:relative; z-index:1}
    Solo se fija el alto; el ancho lo decide la propia imagen.
    Cambia --alto-logo si lo quieres más grande o más chico. */
 .sello{
-  --alto-logo:86px;
+  --alto-logo:130px;
   display:inline-flex; align-items:center;
   flex:none;
   width:auto; min-width:0;
@@ -618,7 +618,7 @@ body > *{position:relative; z-index:1}
   .menu{width:auto}
   .menu a{padding-left:0; padding-right:18px}
   .menu a::after{left:0; right:18px}
-  .sello{--alto-logo:74px}
+  .sello{--alto-logo:104px}
 }
 
 @media (max-width:620px){
@@ -632,7 +632,7 @@ body > *{position:relative; z-index:1}
   .tablero{transform:translateY(20px)}
   .bloque{padding:16px}
   .franja{grid-template-columns:1fr; gap:3px}
-  .sello{--alto-logo:64px}
+  .sello{--alto-logo:80px}
   .marca{gap:11px}
 }
 
@@ -808,7 +808,7 @@ body > *{position:relative; z-index:1}
 const CONFIG = {
 
   /* --- Imágenes --- */
-  logo:   "logo colegio Ayacucho 1.png",   // logo del proyecto de radio
+  logo:   "",   // logo del proyecto de radio
   escudo: "",   // escudo institucional
   fondo:  "",   // fotografía de fondo de la portada
 
