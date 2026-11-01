@@ -29,7 +29,7 @@
   --texto:#1C2622;
   --texto-suave:#5B6B63;
   --linea:#DCE4DD;
-  --rojo-aire:#FF3B3B;
+  --rojo-aire:#E03B3B;
 
   --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
   --cuerpo:'Barlow','Segoe UI',system-ui,-apple-system,sans-serif;
@@ -71,7 +71,7 @@ body::before{
 body > *{position:relative; z-index:1}
 
 /* ============================================================
-   BARRA DE EMISORA SUPERIOR (DISEÑO APP MÓVIL DINÁMICO)
+   BARRA DE EMISORA SUPERIOR (FIJA)
    ============================================================ */
 .emisora{
   position:sticky; top:0; z-index:80;
@@ -95,28 +95,27 @@ body > *{position:relative; z-index:1}
 }
 
 .estado{
-  display:flex; align-items:center; gap:8px;
+  display:flex; align-items:center; gap:9px;
   font-family:var(--display);
   font-weight:700; font-size:.95rem;
-  letter-spacing:.08em; text-transform:uppercase;
+  letter-spacing:.09em; text-transform:uppercase;
   color:var(--senal);
   white-space:nowrap;
 }
 
 .punto{
-  width:10px; height:10px; border-radius:50%;
+  width:9px; height:9px; border-radius:50%;
   background:var(--rojo-aire);
-  box-shadow:0 0 0 0 rgba(255,59,59,.7);
-  animation:latido 1.8s infinite;
+  box-shadow:0 0 0 0 rgba(224,59,59,.65);
+  animation:latido 2s infinite;
   flex:none;
 }
 @keyframes latido{
-  0%{box-shadow:0 0 0 0 rgba(255,59,59,.7)}
-  70%{box-shadow:0 0 0 10px rgba(255,59,59,0)}
-  100%{box-shadow:0 0 0 0 rgba(255,59,59,0)}
+  0%{box-shadow:0 0 0 0 rgba(224,59,59,.6)}
+  70%{box-shadow:0 0 0 10px rgba(224,59,59,0)}
+  100%{box-shadow:0 0 0 0 rgba(224,59,59,0)}
 }
 
-/* Selector rápido de señal en la barra superior */
 .selector-senal-top{
   display:inline-flex;
   background:rgba(255,255,255,.07);
@@ -133,15 +132,12 @@ body > *{position:relative; z-index:1}
   font-family:var(--display);
   font-size:.86rem;
   font-weight:600;
-  letter-spacing:.06em;
+  letter-spacing:.07em;
   text-transform:uppercase;
-  padding:5px 12px;
+  padding:5px 14px;
   border-radius:999px;
   cursor:pointer;
   transition:all .22s ease;
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
   white-space:nowrap;
 }
 
@@ -159,7 +155,6 @@ body > *{position:relative; z-index:1}
   white-space:nowrap;
 }
 
-/* Fila del botón reproductor atractivo */
 .emisora-fila-play{
   display:flex;
   align-items:center;
@@ -176,7 +171,7 @@ body > *{position:relative; z-index:1}
   border:none;
   padding:11px 22px 10px;
   font-family:var(--display);
-  font-size:1.08rem; font-weight:700;
+  font-size:1.06rem; font-weight:700;
   letter-spacing:.09em; text-transform:uppercase;
   border-radius:999px;
   cursor:pointer;
@@ -191,19 +186,12 @@ body > *{position:relative; z-index:1}
 .btn-senal:hover{transform:translateY(-1px); box-shadow:0 6px 22px rgba(127,227,168,.5)}
 .btn-senal:active{transform:translateY(1px)}
 
-/* Estado reproduciendo del botón */
 .btn-senal[data-sonando="si"]{
   background:rgba(17,68,45,.85);
   color:var(--senal);
   box-shadow:inset 0 0 0 1.8px var(--brote), 0 0 18px rgba(46,169,106,.28);
 }
 
-.icono-play-btn{
-  font-size:1rem;
-  line-height:1;
-}
-
-/* Ecualizador dentro del botón */
 .onda-mini{
   display:flex; align-items:flex-end; gap:2.5px;
   height:16px; flex:none;
@@ -228,7 +216,7 @@ body > *{position:relative; z-index:1}
 .aviso-senal.visible{display:block}
 
 /* ============================================================
-   ENCABEZADO CON LOGOS DINÁMICOS Y CENTRADOS
+   ENCABEZADO
    ============================================================ */
 .cabecera{
   background:
@@ -295,7 +283,6 @@ body > *{position:relative; z-index:1}
   font-weight:600;
 }
 
-/* Contenedor general de ambos sellos */
 .sello{
   --alto-logo:clamp(185px, 16vw, 230px);
   position:relative;
@@ -309,9 +296,6 @@ body > *{position:relative; z-index:1}
 }
 .sello:hover{transform:scale(1.06)}
 
-/* --- EFECTO ESPECIAL PARA EL LOGO DEL MICRÓFONO (IZQUIERDA) ---
-   Recorta en círculo perfecto para quitar cualquier fondo negro cuadrado
-   y añade anillos de onda expansiva que laten con la música */
 .sello-microfono{
   width:var(--alto-logo);
   height:var(--alto-logo);
@@ -358,7 +342,6 @@ body.reproduciendo-audio .sello-microfono::before{
   box-shadow:0 8px 24px rgba(0,0,0,.55);
 }
 
-/* Micrófono SVG dinámico integrado si aún no carga el PNG */
 .svg-mic-dinamico{
   width:100%;
   height:100%;
@@ -372,7 +355,6 @@ body.reproduciendo-audio .sello-microfono::before{
   padding:14px;
 }
 
-/* --- ESCUDO 70 AÑOS BODAS DE TITANIO (DERECHA) --- */
 .sello-der img{
   display:block;
   height:100%;
@@ -464,29 +446,33 @@ body.reproduciendo-audio .sello-microfono::before{
 }
 
 /* ============================================================
-   PORTADA
+   PORTADA (FRONTIS DEL COLEGIO CLARO Y NÍTIDO)
    ============================================================ */
 .portada{
   position:relative;
   color:var(--tiza);
-  padding:clamp(30px,6vw,64px) clamp(12px,3vw,28px) 0;
+  padding:clamp(34px,6.5vw,70px) clamp(12px,3vw,28px) 0;
   overflow:hidden;
   background:var(--bosque);
 }
 .portada-fondo{
   position:absolute; inset:0;
-  background-position:center; background-size:cover;
-  transform:scale(1.06);
+  background-position:center 38%;
+  background-size:cover;
+  transform:scale(1.05);
   animation:respirar 26s ease-in-out infinite alternate;
-  opacity:.5;
+  opacity:.92;
+  filter:brightness(1.08) contrast(1.06) saturate(1.08);
 }
 @keyframes respirar{
-  from{transform:scale(1.06) translate3d(0,0,0)}
-  to{transform:scale(1.13) translate3d(0,-1.2%,0)}
+  from{transform:scale(1.05) translate3d(0,0,0)}
+  to{transform:scale(1.11) translate3d(0,-1.2%,0)}
 }
 .portada::before{
   content:""; position:absolute; inset:0;
-  background:linear-gradient(180deg,rgba(5,24,15,.78) 0%,rgba(5,24,15,.86) 55%,var(--papel) 100%);
+  background:
+    linear-gradient(90deg, rgba(5,24,15,.60) 0%, rgba(5,24,15,.26) 55%, rgba(5,24,15,.15) 100%),
+    linear-gradient(180deg, rgba(5,24,15,.22) 0%, rgba(5,24,15,.44) 68%, var(--papel) 100%);
   z-index:1;
 }
 .portada-interior{
@@ -501,12 +487,14 @@ body.reproduciendo-audio .sello-microfono::before{
   line-height:.98;
   letter-spacing:-.005em;
   max-width:16ch;
+  text-shadow:0 3px 16px rgba(0,0,0,.75), 0 1px 4px rgba(0,0,0,.6);
 }
 .portada .bajada{
   margin-top:12px;
   max-width:52ch;
   font-size:clamp(.95rem,1.7vw,1.06rem);
-  color:#C9E6D6;
+  color:#EAF7F0;
+  text-shadow:0 2px 10px rgba(0,0,0,.8);
 }
 
 .onda{
@@ -522,23 +510,25 @@ body.reproduciendo-audio .sello-microfono::before{
   transform:scaleY(.12);
   transform-origin:bottom;
   transition:transform .13s linear;
-  opacity:.85;
+  opacity:.92;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
 }
 
 .tablero{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
   gap:1px;
-  background:rgba(127,227,168,.2);
-  border:1px solid rgba(127,227,168,.2);
+  background:rgba(127,227,168,.24);
+  border:1px solid rgba(127,227,168,.28);
   border-radius:var(--radio);
   overflow:hidden;
   margin-top:22px;
   transform:translateY(22px);
+  box-shadow:0 10px 28px rgba(5,24,15,.22);
 }
 .tablero-celda{
-  background:rgba(5,24,15,.62);
-  backdrop-filter:blur(6px);
+  background:rgba(5,24,15,.72);
+  backdrop-filter:blur(8px);
   padding:14px 18px;
 }
 .tablero-celda dt{
@@ -562,7 +552,7 @@ body.reproduciendo-audio .sello-microfono::before{
 }
 
 /* ============================================================
-   CUERPO Y CONMUTADOR MULTICANAL / OBS
+   CUERPO Y TRANSMISIÓN MULTICANAL
    ============================================================ */
 .contenedor{
   max-width:var(--ancho);
@@ -601,7 +591,6 @@ body.reproduciendo-audio .sello-microfono::before{
   color:var(--texto-suave);
 }
 
-/* Conmutador principal Video En Vivo vs Cabina Radio */
 .conmutador-modo{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -618,7 +607,7 @@ body.reproduciendo-audio .sello-microfono::before{
   font-family:var(--display);
   font-weight:700;
   font-size:1rem;
-  letter-spacing:.05em;
+  letter-spacing:.06em;
   text-transform:uppercase;
   padding:9px 12px;
   border-radius:999px;
@@ -627,7 +616,6 @@ body.reproduciendo-audio .sello-microfono::before{
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:7px;
   color:var(--texto-suave);
 }
 .conmutador-modo button.activo{
@@ -636,7 +624,6 @@ body.reproduciendo-audio .sello-microfono::before{
   box-shadow:0 4px 12px rgba(11,53,36,.25);
 }
 
-/* Pestañas de canal (OBS, TikTok, YouTube, Kick) */
 .canales{
   display:flex; gap:8px; flex-wrap:wrap;
   margin-bottom:14px;
@@ -645,20 +632,20 @@ body.reproduciendo-audio .sello-microfono::before{
   background:transparent;
   border:1px solid var(--linea);
   color:var(--texto-suave);
-  padding:8px 16px 7px;
+  padding:8px 17px 7px;
   border-radius:999px;
   font-family:var(--display);
-  font-size:.96rem; font-weight:600;
+  font-size:.98rem; font-weight:600;
   letter-spacing:.07em; text-transform:uppercase;
   cursor:pointer;
   transition:all .22s ease;
 }
 .canal:hover{border-color:var(--brote); color:var(--selva)}
 .canal[aria-selected="true"]{
-  background:var(--selva);
-  border-color:var(--selva);
+  background:var(--bosque);
+  border-color:var(--bosque);
   color:var(--tiza);
-  box-shadow:0 4px 12px rgba(20,96,60,.25);
+  box-shadow:0 5px 14px rgba(11,53,36,.22);
 }
 
 .pantalla{
@@ -708,27 +695,32 @@ body.reproduciendo-audio .sello-microfono::before{
   cursor:pointer;
 }
 
-/* Consola visual de Radio 24/7 y Cabina en Vivo */
 .radio-dashboard{
   position:absolute; inset:0;
   display:flex; flex-direction:column;
   align-items:center; justify-content:center;
-  gap:12px;
+  gap:14px;
   background:radial-gradient(circle at 50% 35%, #124830 0%, #05140C 75%);
   color:var(--tiza);
   padding:20px;
   text-align:center;
 }
 .radio-disco{
-  width:clamp(88px, 18vw, 120px);
-  height:clamp(88px, 18vw, 120px);
+  width:clamp(84px, 17vw, 114px);
+  height:clamp(84px, 17vw, 114px);
   border-radius:50%;
   border:3px solid var(--senal);
   box-shadow:0 0 28px rgba(46,169,106,.45);
   display:flex; align-items:center; justify-content:center;
   cursor:pointer;
-  background:rgba(5,24,15,.7);
+  background:rgba(5,24,15,.75);
   transition:transform .25s ease;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:.95rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--senal);
 }
 .radio-disco:hover{transform:scale(1.06)}
 .radio-disco.tocando{
@@ -768,7 +760,6 @@ body.reproduciendo-audio .sello-microfono::before{
 }
 .pie-pantalla b{color:var(--bosque); font-weight:600}
 
-/* Botonera de Jingles Institucionales */
 .jingles-caja{
   margin-top:14px;
   padding-top:12px;
@@ -799,9 +790,9 @@ body.reproduciendo-audio .sello-microfono::before{
   font-family:var(--display);
   font-size:.86rem;
   font-weight:600;
-  letter-spacing:.05em;
+  letter-spacing:.06em;
   text-transform:uppercase;
-  padding:6px 12px;
+  padding:6px 14px;
   border-radius:999px;
   cursor:pointer;
   transition:all .2s ease;
@@ -812,7 +803,6 @@ body.reproduciendo-audio .sello-microfono::before{
   border-color:var(--brote);
 }
 
-/* Parrilla de horarios */
 .franja{
   display:grid;
   grid-template-columns:auto 1fr;
@@ -896,9 +886,6 @@ body.reproduciendo-audio .sello-microfono::before{
   margin-top:8px;
 }
 
-/* ============================================================
-   RESPONSIVO MÓVIL Y TABLET
-   ============================================================ */
 @media (max-width:920px){
   .contenedor{grid-template-columns:1fr; margin-top:34px}
   .cabecera{padding:20px 16px}
@@ -923,7 +910,7 @@ body.reproduciendo-audio .sello-microfono::before{
   .emisora{padding:8px 12px; gap:8px}
   .reloj{display:none}
   .selector-senal-top{flex:1; justify-content:center}
-  .chip-senal{flex:1; justify-content:center; font-size:.82rem; padding:5px 8px}
+  .chip-senal{flex:1; text-align:center; font-size:.82rem; padding:5px 8px}
   .btn-senal{padding:11px 16px; font-size:1rem}
 
   .cabecera{padding:18px 12px}
@@ -945,22 +932,20 @@ body.reproduciendo-audio .sello-microfono::before{
 </head>
 <body>
 
-<!-- ============================================================
-     BARRA SUPERIOR INTERACTIVA (CAMBIO DE SEÑAL 24/7 vs EN VIVO)
-     ============================================================ -->
+<!-- BARRA DE EMISORA SUPERIOR -->
 <div class="emisora" id="emisora">
   <div class="emisora-fila-top">
     <div class="estado">
       <span class="punto"></span>
-      <span id="textoEstadoTop">Señal 24/7</span>
+      <span id="textoEstadoTop">Al aire</span>
     </div>
 
     <div class="selector-senal-top" role="group" aria-label="Selector de emisora">
       <button type="button" class="chip-senal activo" id="chip247" onclick="seleccionarFuenteAudio('247')">
-        🎵 Música 24/7
+        Música institucional
       </button>
       <button type="button" class="chip-senal" id="chipVivo" onclick="seleccionarFuenteAudio('vivo')">
-        🎙️ Radio En Vivo
+        Radio en vivo
       </button>
     </div>
 
@@ -969,24 +954,20 @@ body.reproduciendo-audio .sello-microfono::before{
 
   <div class="emisora-fila-play">
     <button class="btn-senal" id="btnSenal" data-sonando="no">
-      <span class="icono-play-btn" id="iconoBtnSenal">▶</span>
-      <span id="textoBtnSenal">Escuchar Música 24/7</span>
+      <span id="textoBtnSenal">Escuchar señal institucional</span>
       <span class="onda-mini" id="ondaMini" aria-hidden="true"></span>
     </button>
   </div>
 
-  <audio id="senal" preload="none"></audio>
-  <audio id="reproductorJingle" preload="none"></audio>
+  <audio id="senal" preload="none" playsinline></audio>
+  <audio id="reproductorJingle" preload="none" playsinline></audio>
   <p class="aviso-senal" id="avisoSenal" role="status"></p>
 </div>
 
-<!-- ============================================================
-     ENCABEZADO CON MICRÓFONO DINÁMICO + ESCUDO 70 AÑOS
-     ============================================================ -->
+<!-- ENCABEZADO -->
 <header class="cabecera">
   <div class="cabecera-interior">
 
-    <!-- Logo Izquierdo: Micrófono Circular Dinámico (Imagen o SVG automático) -->
     <div class="sello sello-izq sello-microfono" id="selloLogo" title="Radio Digital Estudiantil">
       <div class="svg-mic-dinamico">
         <svg viewBox="0 0 120 120" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1011,11 +992,10 @@ body.reproduciendo-audio .sello-microfono::before{
       </div>
     </div>
 
-    <!-- Título Central y Navegación -->
     <div class="marca-central">
       <span class="etiqueta-aniversario">70 Años — Bodas de Titanio</span>
       <h1>U.E. Gran Mariscal de Ayacucho</h1>
-      <p>Radio Digital &amp; Medios Estudiantiles</p>
+      <p>Radio digital estudiantil</p>
       <nav class="menu">
         <a href="#en-vivo">En vivo</a>
         <a href="#parrilla">Horarios</a>
@@ -1023,93 +1003,81 @@ body.reproduciendo-audio .sello-microfono::before{
       </nav>
     </div>
 
-    <!-- Logo Derecho: Escudo 70 Años Bodas de Titanio (Plata/Verde) -->
     <div class="sello sello-der" id="selloEscudo">ESCUDO</div>
 
   </div>
 </header>
 
-<!-- ============================================================
-     CINTILLO
-     ============================================================ -->
+<!-- CINTILLO -->
 <div class="cintillo">
   <div class="cintillo-rotulo">Señal</div>
   <div class="cintillo-pista" id="cintilloPista"></div>
 </div>
 
-<!-- ============================================================
-     PORTADA
-     ============================================================ -->
+<!-- PORTADA -->
 <section class="portada">
   <div class="portada-fondo" id="portadaFondo"></div>
   <div class="portada-interior">
     <h2>La voz del colegio, en línea</h2>
-    <p class="bajada">Transmisión en vivo mediante, TikTok Live y radio continua 24/7 producida por estudiantes y docentes de la unidad educativa.</p>
+    <p class="bajada">Transmisión en vivo y contenidos audiovisuales producidos por estudiantes y docentes de la unidad educativa.</p>
 
     <div class="onda" id="onda" aria-hidden="true"></div>
 
     <dl class="tablero">
       <div class="tablero-celda">
         <dt>Ahora</dt>
-        <dd id="bloqueActual">Fuera de horario<small id="bloqueActualHora">Música 24/7 activa en automático</small></dd>
+        <dd id="bloqueActual">Fuera de horario<small id="bloqueActualHora">La señal institucional sigue disponible</small></dd>
       </div>
       <div class="tablero-celda">
         <dt>A continuación</dt>
         <dd id="bloqueSiguiente">—<small id="bloqueSiguienteHora">&nbsp;</small></dd>
       </div>
       <div class="tablero-celda">
-        <dt>Plataformas</dt>
-        <dd>Multicanal<small>, TikTok, YouTube, Kick y Zeno.fm</small></dd>
+        <dt>Canales</dt>
+        <dd>Multicanal<small>TikTok, YouTube y Kick</small></dd>
       </div>
     </dl>
   </div>
 </section>
 
-<!-- ============================================================
-     CUERPO PRINCIPAL
-     ============================================================ -->
+<!-- CUERPO PRINCIPAL -->
 <div class="contenedor">
 
   <main id="en-vivo">
     <div class="bloque">
       <div class="bloque-titulo">
-        <h3>Centro de Transmisión Digital</h3>
-        <span>Alterna entre Video en Vivo y Cabina de Audio</span>
+        <h3>Transmisión multicanal</h3>
+        <span>Elige el canal donde quieres ver la emisión</span>
       </div>
 
-      <!-- Conmutador entre Pantalla de Video y Consola de Audio -->
       <div class="conmutador-modo">
         <button type="button" id="btnModoVideo" class="activo" onclick="cambiarModoPantalla('video')">
-          📺 Video En Vivo (OBS / Redes)
+          Transmisión en vivo
         </button>
         <button type="button" id="btnModoRadio" onclick="cambiarModoPantalla('radio')">
-          🎙️ Consola de Radio (24/7 / Vivo)
+          Señal de radio abierta
         </button>
       </div>
 
-      <!-- Pestañas de Canales de Video -->
       <div class="canales" id="grupoCanales" role="tablist" aria-label="Canales de transmisión">
-        <button class="canal" role="tab" aria-selected="true"  data-canal="tiktok">TikTok Live</button>
-        <button class="canal" role="tab" aria-selected="false" data-canal="obs">📡 Señal OBS</button>
+        <button class="canal" role="tab" aria-selected="true"  data-canal="tiktok">TikTok</button>
         <button class="canal" role="tab" aria-selected="false" data-canal="youtube">YouTube</button>
         <button class="canal" role="tab" aria-selected="false" data-canal="kick">Kick</button>
       </div>
 
-      <!-- Pantalla Principal -->
       <div class="pantalla" id="pantalla"></div>
 
       <div class="pie-pantalla">
-        <span>Canal activo: <b id="canalActual">TikTok Live</b></span>
-        <span>U.E. Gran Mariscal de Ayacucho — Huanuni</span>
+        <span>Canal en pantalla: <b id="canalActual">TikTok</b></span>
+        <span>Emisión oficial de la unidad educativa</span>
       </div>
 
-      <!-- Botonera Rápida de Jingles Institucionales -->
       <div class="jingles-caja">
-        <span class="jingles-titulo">🔊 Jingles y Cortinas:</span>
+        <span class="jingles-titulo">Cortinas institucionales:</span>
         <div class="jingles-botones">
-          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle1')">⚡ Identificador Radio</button>
-          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle2')">🦅 70 Años Titanio</button>
-          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle3')">🎵 Cortina Estudiantil</button>
+          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle1')">Identificador</button>
+          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle2')">70 Años</button>
+          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle3')">Cortina</button>
         </div>
       </div>
     </div>
@@ -1118,7 +1086,7 @@ body.reproduciendo-audio .sello-microfono::before{
   <aside>
     <div class="bloque" id="parrilla">
       <div class="bloque-titulo">
-        <h3>Horarios de Cabina</h3>
+        <h3>Horarios</h3>
       </div>
       <div id="listaFranjas"></div>
     </div>
@@ -1126,9 +1094,7 @@ body.reproduciendo-audio .sello-microfono::before{
 
 </div>
 
-<!-- ============================================================
-     CRÉDITOS
-     ============================================================ -->
+<!-- CRÉDITOS -->
 <section class="creditos" id="creditos">
   <div class="creditos-rejilla">
     <div class="credito">
@@ -1137,21 +1103,19 @@ body.reproduciendo-audio .sello-microfono::before{
     </div>
     <div class="credito">
       <h4>Docentes colaboradores</h4>
-      <p>Plantel docente y club de comunicación de la unidad educativa.</p>
+      <p>Plantel docente participante de la unidad educativa.</p>
     </div>
     <div class="credito">
       <h4>Soporte técnico y desarrollo</h4>
       <ul>
         <li>Equipo de ingeniería en sistemas</li>
-        <li>Producción y operación de señal OBS / Zeno.fm</li>
+        <li>Producción y operación de la señal</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     PIE
-     ============================================================ -->
+<!-- PIE -->
 <footer class="pie">
   <p>&copy; 2026 Unidad Educativa «Gran Mariscal de Ayacucho» — Plataforma de radio digital institucional</p>
   <p class="firma">Desarrollo IRRA</p>
@@ -1159,53 +1123,53 @@ body.reproduciendo-audio .sello-microfono::before{
 
 <script>
 /* ==============================================================
-   CONFIGURACIÓN CENTRAL — LISTA PARA GITHUB Y OBS
+   CONFIGURACIÓN Y LLAVES DE TRANSMISIÓN
    ==============================================================
-   Aquí solo pegas tus enlaces o nombres de archivo cuando los tengas.
+   Aquí puedes colocar los enlaces, archivos y llaves de streaming:
+   - audio24_7: Enlace de streaming continuo o servidor de audio abierto.
+   - audioEnVivo: Enlace de la transmisión en directo del programa de radio.
+   - tiktok / youtube / kick: Enlaces o códigos embed para video.
    ============================================================== */
 const CONFIG = {
 
-  /* --- 1. Imágenes del Encabezado y Portada --- */
-  logo:   "logo-microfono.png",       // Imagen del micrófono (se recorta en círculo automáticamente)
-  escudo: "logo colegio 3.png",       // Escudo 70 Años Bodas de Titanio (derecha)
-  fondo:  "frontis del colegio 4.png",// Fotografía de fondo del colegio
+  /* --- Imágenes institucionales --- */
+  logo:   "logo-microfono.png",       // Logo circular izquierdo (Micrófono institucional)
+  escudo: "logo colegio 3.png",       // Escudo derecho (70 Años Bodas de Titanio)
+  fondo:  "frontis del colegio 4.png",// Fotografía clara del frontis del colegio
 
-  /* --- 2. Señales de Radio (Zeno.fm 24/7 y Cabina En Vivo OBS) ---
-     Nota: Si transmites desde OBS directo a tu cuenta de Zeno.fm,
-     ambos enlaces pueden llevar la misma URL de Zeno.fm. */
-  audio24_7:   "https://stream.zeno.fm/5dfkzqm70s8uv", // Música continua 24/7
-  audioEnVivo: "https://stream.zeno.fm/5dfkzqm70s8uv", // Señal cuando el colegio transmite en vivo por OBS
+  /* --- Llaves y URLs de Transmisión de Audio --- */
+  audio24_7:   "https://stream.zeno.fm/5dfkzqm70s8uv", // PEGA AQUÍ LA URL DE TU SEÑAL CONTINUA
+  audioEnVivo: "https://stream.zeno.fm/5dfkzqm70s8uv", // PEGA AQUÍ LA URL O LLAVE DE TU PROGRAMA DE RADIO EN VIVO
 
-  /* --- 3. Enlaces de Video En Vivo (OBS / Redes Sociales) --- */
-  tiktok:  "", // Ejemplo: "https://www.tiktok.com/player/v1/live?username=TU_USUARIO"
-  obs:     "", // Enlace embed de tu transmisión OBS (YouTube Embed, Twitch, Restream o archivo .m3u8)
-  youtube: "", // Ejemplo: "https://www.youtube.com/embed/live_stream?channel=ID_DEL_CANAL"
-  kick:    "", // Ejemplo: "https://player.kick.com/TU_CANAL"
+  /* --- Llaves y URLs de Video en Vivo (Plataformas externas) --- */
+  tiktok:  "", // Pega aquí el enlace embed o reproductor de TikTok Live
+  youtube: "", // Pega aquí el enlace embed de YouTube Live (ej: https://www.youtube.com/embed/live_stream?channel=ID)
+  kick:    "", // Pega aquí el enlace embed del canal de Kick
 
-  /* --- 4. Archivos de Jingles Institucionales (Opcional, rutas .mp3 en tu GitHub) --- */
+  /* --- Cortinas y jingles institucionales (.mp3) --- */
   jingles: {
     jingle1: "jingle-identificador.mp3",
     jingle2: "jingle-70-anios.mp3",
     jingle3: "jingle-cortina.mp3"
   },
 
-  /* --- 5. Horarios Oficiales de Emisión --- */
+  /* --- Horarios de transmisión --- */
   horarios: [
-    { inicio:"08:30", fin:"10:00", nombre:"Bloque mañana — Recreo y Noticias" },
-    { inicio:"10:15", fin:"12:00", nombre:"Bloque medio día — Voces Ayacuchenses" },
-    { inicio:"14:30", fin:"16:00", nombre:"Bloque tarde — Cultura y Juventud" }
+    { inicio:"08:30", fin:"10:00", nombre:"Bloque mañana" },
+    { inicio:"10:15", fin:"12:00", nombre:"Bloque medio día" },
+    { inicio:"14:30", fin:"16:00", nombre:"Bloque tarde" }
   ],
 
-  /* --- 6. Mensajes del Cintillo --- */
+  /* --- Textos del cintillo --- */
   cintillo: [
     "Plataforma oficial de transmisión de la <b>Unidad Educativa Gran Mariscal de Ayacucho</b>",
-    "Escucha nuestra <b>Música 24/7</b> o conéctate a la <b>Cabina En Vivo</b>",
-    "Emisión simultánea mediante <b>OBS Studio</b>, <b>TikTok</b>, <b>YouTube</b> y <b>Kick</b>"
+    "Emisión simultánea en <b>TikTok</b>, <b>YouTube</b> y <b>Kick</b>",
+    "Producción a cargo de estudiantes y docentes"
   ]
 };
 
 /* ==============================================================
-   LÓGICA DEL SISTEMA (NO NECESITAS MODIFICAR NADA ABAJO)
+   LÓGICA DE CONTROL DEL SISTEMA
    ============================================================== */
 (function(){
   "use strict";
@@ -1213,7 +1177,6 @@ const CONFIG = {
   const $  = (s)=>document.querySelector(s);
   const $$ = (s)=>Array.from(document.querySelectorAll(s));
 
-  /* ---------- Carga de Imágenes con Respaldo Automático ---------- */
   function ponerImagen(contenedor, ruta, etiqueta, mantenerFallbackSVG){
     if(!ruta) return;
     const img = new Image();
@@ -1232,12 +1195,10 @@ const CONFIG = {
     };
   }
 
-  // En el micrófono, si aún no subes "logo-microfono.png", conserva el micrófono SVG animado
-  ponerImagen($("#selloLogo"),   CONFIG.logo,   "RADIO DIGITAL", true);
-  ponerImagen($("#selloEscudo"), CONFIG.escudo, "70 AÑOS",       false);
+  ponerImagen($("#selloLogo"),   CONFIG.logo,   "LOGO",   true);
+  ponerImagen($("#selloEscudo"), CONFIG.escudo, "ESCUDO", false);
   if(CONFIG.fondo) $("#portadaFondo").style.backgroundImage = `url('${CONFIG.fondo}')`;
 
-  /* ---------- Cintillo Continuo ---------- */
   (function iniciarCintillo(){
     const pista = $("#cintilloPista");
     const texto = CONFIG.cintillo.map(t=>`<span class="cintillo-item">${t}</span>`).join("");
@@ -1250,7 +1211,6 @@ const CONFIG = {
     }
   })();
 
-  /* ---------- Reloj en Tiempo Real ---------- */
   const reloj = $("#reloj");
   function verHora(){
     const d = new Date();
@@ -1260,7 +1220,6 @@ const CONFIG = {
   }
   verHora(); setInterval(verHora,1000);
 
-  /* ---------- Horarios ---------- */
   const enMinutos = (hhmm)=>{ const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
 
   function pintarHorarios(){
@@ -1278,7 +1237,7 @@ const CONFIG = {
         <div class="franja" data-activa="${activa?"si":"no"}">
           <span class="franja-hora">${b.inicio} — ${b.fin}</span>
           <span class="franja-nombre">${b.nombre}
-            <span class="franja-marca">${activa ? "🔴 En emisión ahora" : "Programado"}</span>
+            <span class="franja-marca">${activa ? "En emisión" : "Programado"}</span>
           </span>
         </div>`;
     }).join("");
@@ -1287,8 +1246,8 @@ const CONFIG = {
       $("#bloqueActual").firstChild.nodeValue = actual.nombre;
       $("#bloqueActualHora").textContent = actual.inicio+" a "+actual.fin;
     }else{
-      $("#bloqueActual").firstChild.nodeValue = "Música Continua 24/7";
-      $("#bloqueActualHora").textContent = "Señal automática Zeno.fm activa";
+      $("#bloqueActual").firstChild.nodeValue = "Fuera de horario";
+      $("#bloqueActualHora").textContent = "La señal institucional sigue disponible";
     }
 
     const prox = siguiente || CONFIG.horarios[0];
@@ -1298,7 +1257,6 @@ const CONFIG = {
   pintarHorarios();
   setInterval(pintarHorarios, 30000);
 
-  /* ---------- Animación de Ondas de Sonido ---------- */
   const onda     = $("#onda");
   const ondaMini = $("#ondaMini");
   const BARRAS = 42, BARRAS_MINI = 5;
@@ -1308,10 +1266,10 @@ const CONFIG = {
 
   const barras     = $$("#onda i");
   const barrasMini = $$("#ondaMini i");
-  let sonando = false, t = 0;
+  let sonando = false, t = 0, animFrame = null;
 
   function animarOndas(){
-    t += sonando ? 0.11 : 0.028;
+    t += sonando ? 0.10 : 0.028;
     const fuerza = sonando ? 1 : 0.28;
 
     barras.forEach((b,i)=>{
@@ -1335,17 +1293,17 @@ const CONFIG = {
       });
     }
 
-    requestAnimationFrame(animarOndas);
+    animFrame = requestAnimationFrame(animarOndas);
   }
   animarOndas();
 
-  /* ---------- Control de Audio (Música 24/7 vs Radio En Vivo) ---------- */
   const audio     = $("#senal");
   const btnSenal  = $("#btnSenal");
   const txtBtn    = $("#textoBtnSenal");
-  const icoBtn    = $("#iconoBtnSenal");
   const aviso     = $("#avisoSenal");
-  let fuenteAudio = "247"; // '247' o 'vivo'
+  let fuenteAudio = "247";
+  let detenidoPorUsuario = true;
+  let temporizadorReconexion = null;
 
   function mostrarAviso(msg){
     aviso.textContent = msg;
@@ -1356,7 +1314,7 @@ const CONFIG = {
     aviso.classList.remove("visible");
   }
 
-  function obtenerUrlAudioActual(){
+  function obtenerUrlBase(){
     return fuenteAudio === "vivo"
       ? (CONFIG.audioEnVivo || CONFIG.audio24_7)
       : CONFIG.audio24_7;
@@ -1364,67 +1322,117 @@ const CONFIG = {
 
   function nombreFuenteActual(){
     return fuenteAudio === "vivo"
-      ? "Radio Cabina En Vivo"
-      : "Música 24/7";
+      ? "Radio en vivo"
+      : "Señal institucional";
+  }
+
+  function registrarMediaSession(){
+    if(!("mediaSession" in navigator)) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: nombreFuenteActual(),
+      artist: "U.E. Gran Mariscal de Ayacucho",
+      album: "Radio Digital Estudiantil",
+      artwork: [
+        { src: CONFIG.escudo || CONFIG.logo, sizes: "512x512", type: "image/png" }
+      ]
+    });
+
+    navigator.mediaSession.setActionHandler("play", ()=>{
+      detenidoPorUsuario = false;
+      iniciarStream();
+    });
+    navigator.mediaSession.setActionHandler("pause", ()=>{
+      detenidoPorUsuario = true;
+      audio.pause();
+      actualizarUIReproduccion(false);
+    });
+    navigator.mediaSession.setActionHandler("stop", ()=>{
+      detenidoPorUsuario = true;
+      audio.pause();
+      actualizarUIReproduccion(false);
+    });
   }
 
   function actualizarUIReproduccion(activo){
     sonando = activo;
     btnSenal.dataset.sonando = activo ? "si" : "no";
     document.body.classList.toggle("reproduciendo-audio", activo);
-    icoBtn.textContent = activo ? "⏹" : "▶";
     txtBtn.textContent = activo
       ? "Detener " + nombreFuenteActual()
       : "Escuchar " + nombreFuenteActual();
 
+    if("mediaSession" in navigator){
+      navigator.mediaSession.playbackState = activo ? "playing" : "paused";
+    }
+
     const disco = $("#panelDisco");
     const estadoPanel = $("#labelRadioEstado");
-    if(disco) disco.classList.toggle("tocando", activo);
+    if(disco){
+      disco.classList.toggle("tocando", activo);
+      disco.textContent = activo ? "Al aire" : "Conectar";
+    }
     if(estadoPanel){
       estadoPanel.textContent = activo
-        ? "🔊 Reproduciendo ahora: " + nombreFuenteActual()
-        : "Presiona el micrófono central o el botón superior para escuchar";
+        ? "Reproduciendo ahora: " + nombreFuenteActual()
+        : "Toque el círculo central o el botón superior para escuchar";
     }
+  }
+
+  function iniciarStream(){
+    const urlBase = obtenerUrlBase();
+    if(!urlBase){
+      mostrarAviso("Falta configurar la dirección del streaming en el campo correspondiente.");
+      return;
+    }
+    clearTimeout(temporizadorReconexion);
+    const separador = urlBase.includes("?") ? "&" : "?";
+    audio.src = urlBase + separador + "nocache=" + Date.now();
+    audio.load();
+
+    txtBtn.textContent = "Conectando…";
+    audio.play().then(()=>{
+      limpiarAviso();
+      registrarMediaSession();
+      actualizarUIReproduccion(true);
+    }).catch(()=>{
+      if(!detenidoPorUsuario){
+        programarReconexion();
+      }else{
+        actualizarUIReproduccion(false);
+        mostrarAviso("No se pudo conectar con la señal. Revisa la dirección del streaming.");
+      }
+    });
+  }
+
+  function programarReconexion(){
+    if(detenidoPorUsuario) return;
+    clearTimeout(temporizadorReconexion);
+    temporizadorReconexion = setTimeout(()=>{
+      if(!detenidoPorUsuario && audio.paused){
+        iniciarStream();
+      }
+    }, 2500);
   }
 
   window.seleccionarFuenteAudio = function(nuevaFuente){
     fuenteAudio = nuevaFuente;
     $("#chip247").classList.toggle("activo", nuevaFuente === "247");
     $("#chipVivo").classList.toggle("activo", nuevaFuente === "vivo");
-    $("#textoEstadoTop").textContent = nuevaFuente === "vivo" ? "Cabina En Vivo" : "Señal 24/7";
+    $("#textoEstadoTop").textContent = nuevaFuente === "vivo" ? "En vivo" : "Al aire";
 
-    const url = obtenerUrlAudioActual();
-    audio.src = url;
-    txtBtn.textContent = "Conectando a " + nombreFuenteActual() + "…";
-
-    audio.play().then(()=>{
-      limpiarAviso();
-      actualizarUIReproduccion(true);
-    }).catch(()=>{
-      actualizarUIReproduccion(false);
-    });
+    detenidoPorUsuario = false;
+    iniciarStream();
 
     if(modoPantalla === "radio") renderizarConsolaRadio();
   };
 
   function alternarReproduccion(){
-    const url = obtenerUrlAudioActual();
-    if(!url){
-      mostrarAviso("Configura la URL del streaming en CONFIG.");
-      return;
-    }
-    if(audio.src !== url) audio.src = url;
-
     if(audio.paused){
-      txtBtn.textContent = "Conectando señal…";
-      audio.play().then(()=>{
-        limpiarAviso();
-        actualizarUIReproduccion(true);
-      }).catch(()=>{
-        actualizarUIReproduccion(false);
-        mostrarAviso("No se pudo conectar con el servidor de audio. Verifica la señal.");
-      });
+      detenidoPorUsuario = false;
+      iniciarStream();
     }else{
+      detenidoPorUsuario = true;
+      clearTimeout(temporizadorReconexion);
       audio.pause();
       actualizarUIReproduccion(false);
     }
@@ -1432,29 +1440,36 @@ const CONFIG = {
 
   btnSenal.addEventListener("click", alternarReproduccion);
   audio.addEventListener("playing", ()=>actualizarUIReproduccion(true));
-  audio.addEventListener("pause",   ()=>actualizarUIReproduccion(false));
+  audio.addEventListener("stalled", ()=>{ if(!detenidoPorUsuario) programarReconexion(); });
+  audio.addEventListener("ended",   ()=>{ if(!detenidoPorUsuario) programarReconexion(); });
+  audio.addEventListener("error",   ()=>{ if(!detenidoPorUsuario) programarReconexion(); });
 
-  /* ---------- Jingles Institucionales ---------- */
+  document.addEventListener("visibilitychange", ()=>{
+    if(document.hidden){
+      if(animFrame){ cancelAnimationFrame(animFrame); animFrame = null; }
+    }else{
+      if(!animFrame) animarOndas();
+      if(!detenidoPorUsuario && audio.paused){
+        audio.play().catch(()=>iniciarStream());
+      }
+    }
+  });
+
   const audioJingle = $("#reproductorJingle");
   window.tocarJingle = function(clave){
     const ruta = CONFIG.jingles && CONFIG.jingles[clave];
-    if(!ruta){
-      mostrarAviso("Sube el archivo MP3 del jingle a tu repositorio para reproducirlo.");
-      return;
-    }
+    if(!ruta) return;
     limpiarAviso();
     audioJingle.src = ruta;
     audioJingle.play().catch(()=>{
-      mostrarAviso("Sube el archivo «" + ruta + "» a tu repositorio de GitHub para sonar este jingle.");
+      mostrarAviso("Sube el archivo correspondiente al repositorio para reproducir esta cortina.");
     });
   };
 
-  /* ---------- Conmutador de Pantalla (Video OBS/Redes vs Consola de Radio) ---------- */
   const NOMBRES_CANALES = {
-    tiktok:  "TikTok Live",
-    obs:     "Señal Directa OBS",
-    youtube: "YouTube Live",
-    kick:    "Kick Live"
+    tiktok:  "TikTok",
+    youtube: "YouTube",
+    kick:    "Kick"
   };
 
   const pantalla = $("#pantalla");
@@ -1480,20 +1495,16 @@ const CONFIG = {
     $("#canalActual").textContent = NOMBRES_CANALES[canal] || canal;
 
     if(url){
-      if(url.endsWith(".m3u8") || url.endsWith(".mp4")){
-        pantalla.innerHTML = `<video src="${url}" controls autoplay playsinline></video>`;
-      }else{
-        pantalla.innerHTML =
-          `<iframe src="${url}" title="Transmisión en ${NOMBRES_CANALES[canal]}" `+
-          `allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-      }
+      pantalla.innerHTML =
+        `<iframe src="${url}" title="Transmisión en vivo en ${NOMBRES_CANALES[canal]}" `+
+        `allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
     }else{
       pantalla.innerHTML = `
         <div class="pantalla-vacia">
-          <strong>${NOMBRES_CANALES[canal]} — En espera de emisión</strong>
-          <span>Cuando inicies transmisión en vivo desde OBS o ${NOMBRES_CANALES[canal]}, pega el enlace en CONFIG.${canal}. Mientras tanto, disfruta nuestra señal de audio continua.</span>
+          <strong>Canal sin configurar</strong>
+          <span>Pega la dirección de la transmisión de ${NOMBRES_CANALES[canal]} en el campo correspondiente de la configuración.</span>
           <button type="button" class="btn-ir-radio" onclick="cambiarModoPantalla('radio'); seleccionarFuenteAudio('247');">
-            🎵 Escuchar Música 24/7 Ahora
+            Escuchar señal institucional
           </button>
         </div>`;
     }
@@ -1503,12 +1514,12 @@ const CONFIG = {
     $("#canalActual").textContent = nombreFuenteActual();
     pantalla.innerHTML = `
       <div class="radio-dashboard">
-        <div class="radio-disco ${sonando ? "tocando" : ""}" id="panelDisco" onclick="ocarDesdeConsola()">
-          <span style="font-size:2.4rem">🎙️</span>
+        <div class="radio-disco ${sonando ? "tocando" : ""}" id="panelDisco" onclick="tocarDesdeConsola()">
+          ${sonando ? "Al aire" : "Conectar"}
         </div>
         <div class="radio-info">
-          <h4>${fuenteAudio === "vivo" ? "Cabina U.E. Gran Mariscal de Ayacucho" : "Radio Digital — Música Continua 24/7"}</h4>
-          <p id="labelRadioEstado">${sonando ? "🔊 Reproduciendo ahora: " + nombreFuenteActual() : "Toca el micrófono para reproducir la señal"}</p>
+          <h4>${fuenteAudio === "vivo" ? "U.E. Gran Mariscal de Ayacucho — Señal en vivo" : "Radio Digital — Señal Institucional"}</h4>
+          <p id="labelRadioEstado">${sonando ? "Reproduciendo ahora: " + nombreFuenteActual() : "Toque el círculo central o el botón superior para escuchar"}</p>
           <div class="radio-onda">
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
           </div>
@@ -1516,7 +1527,7 @@ const CONFIG = {
       </div>`;
   }
 
-  window.ocarDesdeConsola = function(){
+  window.tocarDesdeConsola = function(){
     alternarReproduccion();
   };
 
