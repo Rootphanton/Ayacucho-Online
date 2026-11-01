@@ -159,93 +159,130 @@ body > *{position:relative; z-index:1}
 .aviso-senal.visible{display:block}
 
 /* ============================================================
-   ENCABEZADO
+   ENCABEZADO SIMÉTRICO Y CENTRADO (PROTAGONISMO DE LOGOS)
    ============================================================ */
 .cabecera{
-  background:linear-gradient(105deg,var(--bosque) 0%,var(--selva) 52%,var(--bosque) 100%);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(46,169,106,.22) 0%, transparent 70%),
+    linear-gradient(105deg,var(--bosque) 0%,var(--selva) 50%,var(--bosque) 100%);
   color:var(--tiza);
-  padding:16px clamp(12px,3vw,28px);
-  display:flex; align-items:center; justify-content:space-between;
-  gap:16px; flex-wrap:wrap;
-  border-bottom:1px solid rgba(127,227,168,.2);
+  padding:22px clamp(14px,3vw,32px);
+  border-bottom:1px solid rgba(127,227,168,.25);
 }
 
-.marca{display:flex; align-items:center; gap:14px; min-width:0}
+.cabecera-interior{
+  max-width:1100px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:auto minmax(260px, 430px) auto;
+  grid-template-areas:"logo centro escudo";
+  align-items:center;
+  justify-content:center;
+  gap:clamp(20px, 3.8vw, 48px);
+}
 
-/* El logo se muestra con su forma real: no hay caja, no hay recorte.
-   Solo se fija el alto; el ancho lo decide la propia imagen.
-   Cambia --alto-logo si lo quieres más grande o más chico. */
+.sello-izq{grid-area:logo; justify-self:end}
+.sello-der{grid-area:escudo; justify-self:start}
+
+.marca-central{
+  grid-area:centro;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:6px;
+}
+
+.marca-central h1{
+  font-family:var(--display);
+  font-size:clamp(1.5rem, 3.2vw, 2.15rem);
+  font-weight:700;
+  line-height:1.05;
+  letter-spacing:.01em;
+  color:var(--tiza);
+  text-shadow:0 2px 10px rgba(0,0,0,.35);
+}
+
+.marca-central p{
+  font-size:clamp(.9rem, 1.5vw, 1.02rem);
+  color:var(--senal);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-family:var(--display);
+  font-weight:600;
+}
+
+/* Logos grandes, nítidos y bien centrados */
 .sello{
-  --alto-logo:130px;
-  display:inline-flex; align-items:center;
+  --alto-logo:clamp(190px, 16.5vw, 235px);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   flex:none;
-  width:auto; min-width:0;
+  width:auto;
   height:var(--alto-logo);
-  padding:0; margin:0;
+  padding:0;
+  margin:0;
   background:none;
   border:none;
-  border-radius:0;
-  box-shadow:none;
   overflow:visible;
   font-family:var(--display);
-  font-size:.74rem; font-weight:700; letter-spacing:.12em;
-  color:#BFE6D0; text-align:center; line-height:1.1;
+  font-size:.85rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  color:#BFE6D0;
+  text-align:center;
+  line-height:1.1;
   transition:transform .35s cubic-bezier(.2,.8,.3,1);
 }
-.sello:hover{transform:scale(1.05)}
+.sello:hover{transform:scale(1.06)}
 
 .sello img{
   display:block;
   height:100%;
-  width:auto;          /* el ancho lo marca la proporción real del PNG */
-  max-width:none;
-  object-fit:contain;  /* nunca se recorta ni se deforma */
+  width:auto;
+  max-width:300px;
+  object-fit:contain;
   background:none;
-  border-radius:0;
-  /* La sombra sigue el contorno del PNG transparente, no un rectángulo */
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));
+  filter:drop-shadow(0 6px 16px rgba(0,0,0,.55));
 }
 
-/* Solo se dibuja un recuadro punteado cuando todavía NO hay imagen.
-   En cuanto el PNG carga, desaparece por completo. */
+/* Solo se dibuja un recuadro punteado cuando todavía NO hay imagen */
 .sello:not(.con-imagen){
-  border:1px dashed rgba(127,227,168,.45);
-  border-radius:6px;
-  padding:0 14px;
+  border:1.5px dashed rgba(127,227,168,.5);
+  border-radius:10px;
+  padding:0 24px;
+  min-width:140px;
 }
 
-.marca h1{
-  font-family:var(--display);
-  font-size:clamp(1.15rem,3.1vw,1.55rem);
-  font-weight:700; line-height:1.05;
-  letter-spacing:.005em;
+.menu{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:8px;
+  background:rgba(5,24,15,.42);
+  padding:5px 8px;
+  border-radius:999px;
+  border:1px solid rgba(127,227,168,.2);
 }
-.marca p{
-  font-size:.82rem;
-  color:#BFE6D0;
-  letter-spacing:.04em;
-}
-
-.menu{display:flex; gap:4px; flex-wrap:wrap}
 .menu a{
   text-decoration:none;
   font-family:var(--display);
-  font-size:1rem; font-weight:600;
-  letter-spacing:.07em; text-transform:uppercase;
-  padding:7px 15px 6px;
+  font-size:1rem;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:7px 16px 6px;
   border-radius:999px;
-  color:#D8EFE2;
+  color:#E2F5EA;
   position:relative;
   transition:color .2s ease, background .2s ease;
 }
-.menu a::after{
-  content:""; position:absolute; left:15px; right:15px; bottom:3px;
-  height:1.5px; background:var(--senal);
-  transform:scaleX(0); transform-origin:left;
-  transition:transform .28s cubic-bezier(.2,.8,.3,1);
+.menu a:hover{
+  color:var(--tinta);
+  background:var(--senal);
 }
-.menu a:hover{color:var(--tiza)}
-.menu a:hover::after{transform:scaleX(1)}
 
 /* ============================================================
    CINTILLO
@@ -606,19 +643,26 @@ body > *{position:relative; z-index:1}
 .cargado .entra[data-orden="4"]{transition-delay:.35s}
 
 /* ============================================================
-   RESPONSIVO
+   RESPONSIVO (TABLET Y CELULAR — MODO APP)
    ============================================================ */
 @media (max-width:920px){
   .contenedor{grid-template-columns:1fr; margin-top:34px}
-  .cabecera{flex-direction:column; align-items:flex-start}
-  .cabecera > .marca:last-child{
-    width:100%;
-    justify-content:space-between;
+  .cabecera{padding:20px 16px}
+  .cabecera-interior{
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:
+      "logo escudo"
+      "centro centro";
+    gap:16px 24px;
   }
-  .menu{width:auto}
-  .menu a{padding-left:0; padding-right:18px}
-  .menu a::after{left:0; right:18px}
-  .sello{--alto-logo:104px}
+  .sello-izq{justify-self:end}
+  .sello-der{justify-self:start}
+  .sello{
+    --alto-logo:clamp(155px, 24vw, 195px);
+  }
+  .sello img{
+    max-width:44vw;
+  }
 }
 
 @media (max-width:620px){
@@ -627,13 +671,33 @@ body > *{position:relative; z-index:1}
   .onda-mini{display:none}
   .reloj{font-size:.9rem}
   .btn-senal{width:100%; order:5; padding:11px 18px}
+  .cabecera{padding:18px 12px}
+  .cabecera-interior{
+    gap:14px 12px;
+  }
+  .sello{
+    --alto-logo:clamp(130px, 35vw, 165px);
+  }
+  .sello img{
+    max-width:45vw;
+  }
+  .marca-central h1{
+    font-size:clamp(1.35rem, 6vw, 1.65rem);
+  }
+  .menu{
+    width:100%;
+    justify-content:space-around;
+    gap:4px;
+  }
+  .menu a{
+    padding:7px 12px 6px;
+    font-size:.94rem;
+  }
   .onda{height:52px; gap:2px}
   .portada h2{max-width:100%}
   .tablero{transform:translateY(20px)}
   .bloque{padding:16px}
   .franja{grid-template-columns:1fr; gap:3px}
-  .sello{--alto-logo:80px}
-  .marca{gap:11px}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -665,20 +729,20 @@ body > *{position:relative; z-index:1}
      ENCABEZADO
      ============================================================ -->
 <header class="cabecera">
-  <div class="marca">
-    <div class="sello" id="selloLogo">LOGO</div>
-    <div>
+  <div class="cabecera-interior">
+    <div class="sello sello-izq" id="selloLogo">LOGO</div>
+
+    <div class="marca-central">
       <h1>U.E. Gran Mariscal de Ayacucho</h1>
       <p>Radio digital estudiantil</p>
+      <nav class="menu">
+        <a href="#en-vivo">En vivo</a>
+        <a href="#parrilla">Horarios</a>
+        <a href="#creditos">Créditos</a>
+      </nav>
     </div>
-  </div>
-  <div class="marca">
-    <nav class="menu">
-      <a href="#en-vivo">En vivo</a>
-      <a href="#parrilla">Horarios</a>
-      <a href="#creditos">Créditos</a>
-    </nav>
-    <div class="sello" id="selloEscudo">ESCUDO</div>
+
+    <div class="sello sello-der" id="selloEscudo">ESCUDO</div>
   </div>
 </header>
 
