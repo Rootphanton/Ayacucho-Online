@@ -2,9 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="Radio digital de la Unidad Educativa Gran Mariscal de Ayacucho. Señal en vivo y transmisión multicanal.">
 <meta name="theme-color" content="#05180F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Radio Digital — U.E. Gran Mariscal de Ayacucho</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,22 +23,23 @@
   --selva:#14603C;
   --brote:#2EA96A;
   --senal:#7FE3A8;
+  --titanio:#D0DCE5;
   --papel:#F1F4F0;
   --tiza:#FFFFFF;
   --texto:#1C2622;
   --texto-suave:#5B6B63;
   --linea:#DCE4DD;
-  --rojo-aire:#E03B3B;
+  --rojo-aire:#FF3B3B;
 
   --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
   --cuerpo:'Barlow','Segoe UI',system-ui,-apple-system,sans-serif;
 
-  --radio:10px;
-  --sombra:0 1px 2px rgba(5,24,15,.05), 0 8px 24px rgba(5,24,15,.06);
+  --radio:12px;
+  --sombra:0 1px 2px rgba(5,24,15,.05), 0 8px 24px rgba(5,24,15,.08);
   --ancho:1180px;
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 
 body{
@@ -57,7 +60,6 @@ button{font-family:inherit}
   border-radius:4px;
 }
 
-/* Textura sutil de fondo, sin ruido visual */
 body::before{
   content:"";
   position:fixed; inset:0;
@@ -69,104 +71,171 @@ body::before{
 body > *{position:relative; z-index:1}
 
 /* ============================================================
-   BARRA DE EMISORA (FIJA)
+   BARRA DE EMISORA SUPERIOR (DISEÑO APP MÓVIL DINÁMICO)
    ============================================================ */
 .emisora{
-  position:sticky; top:0; z-index:60;
-  background:var(--tinta);
+  position:sticky; top:0; z-index:80;
+  background:rgba(5,24,15,.96);
+  backdrop-filter:blur(12px);
   color:var(--tiza);
-  border-bottom:1px solid rgba(127,227,168,.22);
-  display:flex; align-items:center; gap:14px;
-  padding:9px clamp(12px,3vw,28px);
+  border-bottom:1px solid rgba(127,227,168,.24);
+  padding:10px clamp(12px,3vw,28px);
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+}
+
+.emisora-fila-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
   flex-wrap:wrap;
 }
 
 .estado{
-  display:flex; align-items:center; gap:9px;
+  display:flex; align-items:center; gap:8px;
   font-family:var(--display);
-  font-weight:600; font-size:.95rem;
-  letter-spacing:.09em; text-transform:uppercase;
+  font-weight:700; font-size:.95rem;
+  letter-spacing:.08em; text-transform:uppercase;
   color:var(--senal);
   white-space:nowrap;
 }
 
 .punto{
-  width:9px; height:9px; border-radius:50%;
+  width:10px; height:10px; border-radius:50%;
   background:var(--rojo-aire);
-  box-shadow:0 0 0 0 rgba(224,59,59,.65);
-  animation:latido 2s infinite;
+  box-shadow:0 0 0 0 rgba(255,59,59,.7);
+  animation:latido 1.8s infinite;
   flex:none;
 }
 @keyframes latido{
-  0%{box-shadow:0 0 0 0 rgba(224,59,59,.6)}
-  70%{box-shadow:0 0 0 10px rgba(224,59,59,0)}
-  100%{box-shadow:0 0 0 0 rgba(224,59,59,0)}
+  0%{box-shadow:0 0 0 0 rgba(255,59,59,.7)}
+  70%{box-shadow:0 0 0 10px rgba(255,59,59,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,59,59,0)}
 }
 
-/* Onda pequeña de la barra */
-.onda-mini{
-  display:flex; align-items:flex-end; gap:2px;
-  height:16px; flex:none;
+/* Selector rápido de señal en la barra superior */
+.selector-senal-top{
+  display:inline-flex;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(127,227,168,.22);
+  border-radius:999px;
+  padding:3px;
+  gap:4px;
 }
-.onda-mini i{
-  display:block; width:2.5px; height:100%;
-  background:var(--brote);
-  border-radius:2px;
-  transform:scaleY(.22);
-  transform-origin:bottom;
-  transition:transform .12s linear, background .3s ease;
+
+.chip-senal{
+  border:none;
+  background:transparent;
+  color:#A9CDBA;
+  font-family:var(--display);
+  font-size:.86rem;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:5px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all .22s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  white-space:nowrap;
 }
-.emisora.sonando .onda-mini i{background:var(--senal)}
+
+.chip-senal.activo{
+  background:linear-gradient(135deg, var(--brote), var(--selva));
+  color:var(--tiza);
+  box-shadow:0 2px 10px rgba(46,169,106,.4);
+}
 
 .reloj{
-  margin-left:auto;
   font-family:var(--display);
-  font-size:1rem; letter-spacing:.06em;
-  color:rgba(255,255,255,.62);
+  font-size:.98rem; letter-spacing:.06em;
+  color:rgba(255,255,255,.72);
   font-variant-numeric:tabular-nums;
   white-space:nowrap;
 }
 
+/* Fila del botón reproductor atractivo */
+.emisora-fila-play{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
 .btn-senal{
-  background:var(--brote);
+  flex:1;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(90deg, #1E8752 0%, var(--brote) 50%, #24965C 100%);
+  background-size:200% 100%;
   color:var(--tinta);
   border:none;
-  padding:9px 22px 8px;
+  padding:11px 22px 10px;
   font-family:var(--display);
-  font-size:1rem; font-weight:700;
-  letter-spacing:.08em; text-transform:uppercase;
+  font-size:1.08rem; font-weight:700;
+  letter-spacing:.09em; text-transform:uppercase;
   border-radius:999px;
   cursor:pointer;
-  transition:transform .18s cubic-bezier(.2,.8,.3,1), background .2s ease, box-shadow .2s ease;
-  box-shadow:0 4px 14px rgba(46,169,106,.3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  transition:transform .18s cubic-bezier(.2,.8,.3,1), box-shadow .25s ease, background .3s ease;
+  box-shadow:0 4px 18px rgba(46,169,106,.42);
   white-space:nowrap;
 }
-.btn-senal:hover{background:var(--senal); transform:translateY(-1px)}
+.btn-senal:hover{transform:translateY(-1px); box-shadow:0 6px 22px rgba(127,227,168,.5)}
 .btn-senal:active{transform:translateY(1px)}
+
+/* Estado reproduciendo del botón */
 .btn-senal[data-sonando="si"]{
-  background:transparent;
+  background:rgba(17,68,45,.85);
   color:var(--senal);
-  box-shadow:inset 0 0 0 1.5px rgba(127,227,168,.55);
+  box-shadow:inset 0 0 0 1.8px var(--brote), 0 0 18px rgba(46,169,106,.28);
+}
+
+.icono-play-btn{
+  font-size:1rem;
+  line-height:1;
+}
+
+/* Ecualizador dentro del botón */
+.onda-mini{
+  display:flex; align-items:flex-end; gap:2.5px;
+  height:16px; flex:none;
+}
+.onda-mini i{
+  display:block; width:3px; height:100%;
+  background:currentColor;
+  border-radius:2px;
+  transform:scaleY(.25);
+  transform-origin:bottom;
+  transition:transform .12s linear;
 }
 
 .aviso-senal{
   width:100%;
   font-size:.82rem;
-  color:#F6C6C6;
+  color:#FFD2D2;
+  text-align:center;
   padding-top:2px;
   display:none;
 }
 .aviso-senal.visible{display:block}
 
 /* ============================================================
-   ENCABEZADO SIMÉTRICO Y CENTRADO (PROTAGONISMO DE LOGOS)
+   ENCABEZADO CON LOGOS DINÁMICOS Y CENTRADOS
    ============================================================ */
 .cabecera{
   background:
-    radial-gradient(circle at 50% 50%, rgba(46,169,106,.22) 0%, transparent 70%),
+    radial-gradient(circle at 50% 45%, rgba(46,169,106,.26) 0%, transparent 68%),
     linear-gradient(105deg,var(--bosque) 0%,var(--selva) 50%,var(--bosque) 100%);
   color:var(--tiza);
-  padding:22px clamp(14px,3vw,32px);
+  padding:24px clamp(14px,3vw,32px);
   border-bottom:1px solid rgba(127,227,168,.25);
 }
 
@@ -193,9 +262,23 @@ body > *{position:relative; z-index:1}
   gap:6px;
 }
 
+.etiqueta-aniversario{
+  display:inline-block;
+  font-family:var(--display);
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--titanio);
+  background:rgba(5,24,15,.45);
+  border:1px solid rgba(208,220,229,.35);
+  padding:3px 12px;
+  border-radius:999px;
+}
+
 .marca-central h1{
   font-family:var(--display);
-  font-size:clamp(1.5rem, 3.2vw, 2.15rem);
+  font-size:clamp(1.55rem, 3.3vw, 2.2rem);
   font-weight:700;
   line-height:1.05;
   letter-spacing:.01em;
@@ -204,55 +287,108 @@ body > *{position:relative; z-index:1}
 }
 
 .marca-central p{
-  font-size:clamp(.9rem, 1.5vw, 1.02rem);
+  font-size:clamp(.92rem, 1.5vw, 1.04rem);
   color:var(--senal);
-  letter-spacing:.08em;
+  letter-spacing:.09em;
   text-transform:uppercase;
   font-family:var(--display);
   font-weight:600;
 }
 
-/* Logos grandes, nítidos y bien centrados */
+/* Contenedor general de ambos sellos */
 .sello{
-  --alto-logo:clamp(190px, 16.5vw, 235px);
+  --alto-logo:clamp(185px, 16vw, 230px);
+  position:relative;
   display:inline-flex;
   align-items:center;
   justify-content:center;
   flex:none;
   width:auto;
   height:var(--alto-logo);
-  padding:0;
-  margin:0;
-  background:none;
-  border:none;
-  overflow:visible;
-  font-family:var(--display);
-  font-size:.85rem;
-  font-weight:700;
-  letter-spacing:.12em;
-  color:#BFE6D0;
-  text-align:center;
-  line-height:1.1;
   transition:transform .35s cubic-bezier(.2,.8,.3,1);
 }
 .sello:hover{transform:scale(1.06)}
 
-.sello img{
+/* --- EFECTO ESPECIAL PARA EL LOGO DEL MICRÓFONO (IZQUIERDA) ---
+   Recorta en círculo perfecto para quitar cualquier fondo negro cuadrado
+   y añade anillos de onda expansiva que laten con la música */
+.sello-microfono{
+  width:var(--alto-logo);
+  height:var(--alto-logo);
+  border-radius:50%;
+  animation:flotarMic 4s ease-in-out infinite;
+}
+@keyframes flotarMic{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+
+.sello-microfono::before,
+.sello-microfono::after{
+  content:"";
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+  border:2px solid rgba(127,227,168,.45);
+  pointer-events:none;
+  opacity:.55;
+  transition:all .3s ease;
+}
+.sello-microfono::after{
+  inset:-14px;
+  border-color:rgba(208,220,229,.25);
+  animation:ondaPulso 2.6s ease-out infinite;
+}
+body.reproduciendo-audio .sello-microfono::before{
+  border-color:var(--senal);
+  box-shadow:0 0 25px rgba(46,169,106,.75);
+  animation:ondaPulso 1.4s ease-out infinite;
+}
+@keyframes ondaPulso{
+  0%{transform:scale(.94); opacity:.85}
+  100%{transform:scale(1.16); opacity:0}
+}
+
+.sello-microfono img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  border:2.5px solid rgba(208,220,229,.65);
+  box-shadow:0 8px 24px rgba(0,0,0,.55);
+}
+
+/* Micrófono SVG dinámico integrado si aún no carga el PNG */
+.svg-mic-dinamico{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 42%, #1D7A4C 0%, #072215 72%, #04120B 100%);
+  border:3px solid #C5D3DC;
+  box-shadow:inset 0 0 22px rgba(127,227,168,.35), 0 8px 22px rgba(0,0,0,.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+}
+
+/* --- ESCUDO 70 AÑOS BODAS DE TITANIO (DERECHA) --- */
+.sello-der img{
   display:block;
   height:100%;
   width:auto;
   max-width:300px;
   object-fit:contain;
-  background:none;
   filter:drop-shadow(0 6px 16px rgba(0,0,0,.55));
 }
 
-/* Solo se dibuja un recuadro punteado cuando todavía NO hay imagen */
-.sello:not(.con-imagen){
+.sello-der:not(.con-imagen){
   border:1.5px dashed rgba(127,227,168,.5);
   border-radius:10px;
   padding:0 24px;
   min-width:140px;
+  font-family:var(--display);
+  color:#BFE6D0;
 }
 
 .menu{
@@ -261,10 +397,10 @@ body > *{position:relative; z-index:1}
   flex-wrap:wrap;
   justify-content:center;
   margin-top:8px;
-  background:rgba(5,24,15,.42);
+  background:rgba(5,24,15,.45);
   padding:5px 8px;
   border-radius:999px;
-  border:1px solid rgba(127,227,168,.2);
+  border:1px solid rgba(127,227,168,.22);
 }
 .menu a{
   text-decoration:none;
@@ -276,7 +412,6 @@ body > *{position:relative; z-index:1}
   padding:7px 16px 6px;
   border-radius:999px;
   color:#E2F5EA;
-  position:relative;
   transition:color .2s ease, background .2s ease;
 }
 .menu a:hover{
@@ -334,7 +469,7 @@ body > *{position:relative; z-index:1}
 .portada{
   position:relative;
   color:var(--tiza);
-  padding:clamp(34px,7vw,72px) clamp(12px,3vw,28px) 0;
+  padding:clamp(30px,6vw,64px) clamp(12px,3vw,28px) 0;
   overflow:hidden;
   background:var(--bosque);
 }
@@ -362,22 +497,21 @@ body > *{position:relative; z-index:1}
 .portada h2{
   font-family:var(--display);
   font-weight:700;
-  font-size:clamp(2.2rem,7.2vw,4.4rem);
+  font-size:clamp(2.2rem,7.2vw,4.2rem);
   line-height:.98;
   letter-spacing:-.005em;
   max-width:16ch;
 }
 .portada .bajada{
-  margin-top:14px;
+  margin-top:12px;
   max-width:52ch;
   font-size:clamp(.95rem,1.7vw,1.06rem);
   color:#C9E6D6;
 }
 
-/* Onda grande */
 .onda{
   display:flex; align-items:flex-end; gap:3px;
-  height:78px; margin-top:30px;
+  height:72px; margin-top:24px;
   padding-bottom:2px;
 }
 .onda i{
@@ -391,7 +525,6 @@ body > *{position:relative; z-index:1}
   opacity:.85;
 }
 
-/* Tarjetas de estado de la parrilla */
 .tablero{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
@@ -400,11 +533,11 @@ body > *{position:relative; z-index:1}
   border:1px solid rgba(127,227,168,.2);
   border-radius:var(--radio);
   overflow:hidden;
-  margin-top:26px;
+  margin-top:22px;
   transform:translateY(22px);
 }
 .tablero-celda{
-  background:rgba(5,24,15,.55);
+  background:rgba(5,24,15,.62);
   backdrop-filter:blur(6px);
   padding:14px 18px;
 }
@@ -426,11 +559,10 @@ body > *{position:relative; z-index:1}
   font-family:var(--cuerpo);
   font-size:.8rem; font-weight:400;
   color:#A9CDBA;
-  letter-spacing:0;
 }
 
 /* ============================================================
-   CUERPO
+   CUERPO Y CONMUTADOR MULTICANAL / OBS
    ============================================================ */
 .contenedor{
   max-width:var(--ancho);
@@ -469,7 +601,42 @@ body > *{position:relative; z-index:1}
   color:var(--texto-suave);
 }
 
-/* Pestañas de canal */
+/* Conmutador principal Video En Vivo vs Cabina Radio */
+.conmutador-modo{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:#E7EFE9;
+  border:1px solid var(--linea);
+  border-radius:999px;
+  padding:4px;
+  margin-bottom:14px;
+  gap:4px;
+}
+.conmutador-modo button{
+  background:none;
+  border:none;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1rem;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  padding:9px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all .25s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  color:var(--texto-suave);
+}
+.conmutador-modo button.activo{
+  background:var(--bosque);
+  color:var(--tiza);
+  box-shadow:0 4px 12px rgba(11,53,36,.25);
+}
+
+/* Pestañas de canal (OBS, TikTok, YouTube, Kick) */
 .canales{
   display:flex; gap:8px; flex-wrap:wrap;
   margin-bottom:14px;
@@ -478,52 +645,116 @@ body > *{position:relative; z-index:1}
   background:transparent;
   border:1px solid var(--linea);
   color:var(--texto-suave);
-  padding:8px 17px 7px;
+  padding:8px 16px 7px;
   border-radius:999px;
   font-family:var(--display);
-  font-size:.98rem; font-weight:600;
+  font-size:.96rem; font-weight:600;
   letter-spacing:.07em; text-transform:uppercase;
   cursor:pointer;
-  transition:all .22s cubic-bezier(.2,.8,.3,1);
+  transition:all .22s ease;
 }
 .canal:hover{border-color:var(--brote); color:var(--selva)}
 .canal[aria-selected="true"]{
-  background:var(--bosque);
-  border-color:var(--bosque);
+  background:var(--selva);
+  border-color:var(--selva);
   color:var(--tiza);
-  box-shadow:0 5px 14px rgba(11,53,36,.22);
+  box-shadow:0 4px 12px rgba(20,96,60,.25);
 }
 
 .pantalla{
   position:relative;
   padding-bottom:56.25%;
-  border-radius:8px;
+  border-radius:10px;
   overflow:hidden;
-  background:#000;
+  background:#05100B;
   border:1px solid var(--linea);
 }
-.pantalla iframe{
+.pantalla iframe,
+.pantalla video{
   position:absolute; inset:0;
   width:100%; height:100%; border:0;
-  animation:aparecer .45s ease;
+  background:#000;
 }
-@keyframes aparecer{from{opacity:0}to{opacity:1}}
 
 .pantalla-vacia{
   position:absolute; inset:0;
   display:flex; flex-direction:column;
   align-items:center; justify-content:center;
-  gap:6px; text-align:center; padding:20px;
-  color:#8FA79A;
+  gap:10px; text-align:center; padding:24px;
+  color:#A9CDBA;
   background:
-    repeating-linear-gradient(45deg,#0A120E 0 14px,#0D1712 14px 28px);
+    radial-gradient(circle at 50% 40%, rgba(20,96,60,.35), rgba(5,16,11,.96)),
+    repeating-linear-gradient(45deg,#08140E 0 14px,#0B1A12 14px 28px);
 }
 .pantalla-vacia strong{
   font-family:var(--display);
-  font-size:1.1rem; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--brote);
+  font-size:1.25rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--senal);
 }
-.pantalla-vacia span{font-size:.84rem; max-width:40ch}
+.pantalla-vacia span{font-size:.88rem; max-width:44ch; color:#8FA79A}
+
+.btn-ir-radio{
+  margin-top:6px;
+  background:var(--brote);
+  color:var(--tinta);
+  border:none;
+  padding:8px 18px;
+  border-radius:999px;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:.95rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+
+/* Consola visual de Radio 24/7 y Cabina en Vivo */
+.radio-dashboard{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:12px;
+  background:radial-gradient(circle at 50% 35%, #124830 0%, #05140C 75%);
+  color:var(--tiza);
+  padding:20px;
+  text-align:center;
+}
+.radio-disco{
+  width:clamp(88px, 18vw, 120px);
+  height:clamp(88px, 18vw, 120px);
+  border-radius:50%;
+  border:3px solid var(--senal);
+  box-shadow:0 0 28px rgba(46,169,106,.45);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  background:rgba(5,24,15,.7);
+  transition:transform .25s ease;
+}
+.radio-disco:hover{transform:scale(1.06)}
+.radio-disco.tocando{
+  animation:pulsoCabina 1.6s infinite alternate;
+}
+@keyframes pulsoCabina{
+  from{box-shadow:0 0 15px rgba(46,169,106,.4)}
+  to{box-shadow:0 0 36px rgba(127,227,168,.85)}
+}
+.radio-info h4{
+  font-family:var(--display);
+  font-size:clamp(1.25rem, 3vw, 1.6rem);
+  color:var(--senal);
+  letter-spacing:.04em;
+}
+.radio-info p{
+  font-size:.88rem;
+  color:#C9E6D6;
+}
+.radio-onda{
+  display:flex; gap:3px; height:26px; align-items:flex-end; justify-content:center; margin-top:6px;
+}
+.radio-onda i{
+  width:3.5px; height:100%; background:var(--senal); border-radius:2px;
+  transform:scaleY(.15); transform-origin:bottom; transition:transform .12s linear;
+}
 
 .pie-pantalla{
   margin-top:12px;
@@ -537,7 +768,51 @@ body > *{position:relative; z-index:1}
 }
 .pie-pantalla b{color:var(--bosque); font-weight:600}
 
-/* Parrilla */
+/* Botonera de Jingles Institucionales */
+.jingles-caja{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px dashed var(--linea);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.jingles-titulo{
+  font-family:var(--display);
+  font-size:.9rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--bosque);
+}
+.jingles-botones{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.btn-jingle{
+  background:var(--papel);
+  border:1px solid var(--linea);
+  color:var(--bosque);
+  font-family:var(--display);
+  font-size:.86rem;
+  font-weight:600;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  padding:6px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.btn-jingle:hover{
+  background:var(--brote);
+  color:var(--tinta);
+  border-color:var(--brote);
+}
+
+/* Parrilla de horarios */
 .franja{
   display:grid;
   grid-template-columns:auto 1fr;
@@ -547,9 +822,7 @@ body > *{position:relative; z-index:1}
   background:var(--papel);
   border:1px solid transparent;
   margin-bottom:9px;
-  transition:border-color .25s ease, background .25s ease, transform .25s cubic-bezier(.2,.8,.3,1);
 }
-.franja:hover{transform:translateX(3px)}
 .franja-hora{
   font-family:var(--display);
   font-size:1.05rem; font-weight:600;
@@ -572,7 +845,7 @@ body > *{position:relative; z-index:1}
 .franja[data-activa="si"] .franja-hora{color:var(--bosque)}
 
 /* ============================================================
-   CRÉDITOS
+   CRÉDITOS Y PIE
    ============================================================ */
 .creditos{
   max-width:var(--ancho);
@@ -591,10 +864,7 @@ body > *{position:relative; z-index:1}
   border-radius:var(--radio);
   padding:18px 20px;
   box-shadow:var(--sombra);
-  opacity:0; transform:translateY(16px);
-  transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.3,1);
 }
-.credito.visible{opacity:1; transform:none}
 .credito h4{
   font-family:var(--display);
   font-size:1.08rem; font-weight:700;
@@ -611,9 +881,6 @@ body > *{position:relative; z-index:1}
   width:6px; height:2px; background:var(--brote);
 }
 
-/* ============================================================
-   PIE
-   ============================================================ */
 .pie{
   background:var(--tinta);
   color:#9FBFAE;
@@ -630,20 +897,7 @@ body > *{position:relative; z-index:1}
 }
 
 /* ============================================================
-   ENTRADA ORQUESTADA
-   ============================================================ */
-.entra{opacity:0; transform:translateY(14px)}
-.cargado .entra{
-  opacity:1; transform:none;
-  transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.3,1);
-}
-.cargado .entra[data-orden="1"]{transition-delay:.05s}
-.cargado .entra[data-orden="2"]{transition-delay:.15s}
-.cargado .entra[data-orden="3"]{transition-delay:.25s}
-.cargado .entra[data-orden="4"]{transition-delay:.35s}
-
-/* ============================================================
-   RESPONSIVO (TABLET Y CELULAR — MODO APP)
+   RESPONSIVO MÓVIL Y TABLET
    ============================================================ */
 @media (max-width:920px){
   .contenedor{grid-template-columns:1fr; margin-top:34px}
@@ -653,88 +907,115 @@ body > *{position:relative; z-index:1}
     grid-template-areas:
       "logo escudo"
       "centro centro";
-    gap:16px 24px;
+    gap:18px 22px;
   }
   .sello-izq{justify-self:end}
   .sello-der{justify-self:start}
   .sello{
-    --alto-logo:clamp(155px, 24vw, 195px);
+    --alto-logo:clamp(150px, 24vw, 190px);
   }
-  .sello img{
+  .sello-der img{
     max-width:44vw;
   }
 }
 
 @media (max-width:620px){
-  .emisora{gap:10px; padding:8px 14px}
-  .estado{font-size:.85rem}
-  .onda-mini{display:none}
-  .reloj{font-size:.9rem}
-  .btn-senal{width:100%; order:5; padding:11px 18px}
-  .cabecera{padding:18px 12px}
-  .cabecera-interior{
-    gap:14px 12px;
-  }
-  .sello{
-    --alto-logo:clamp(130px, 35vw, 165px);
-  }
-  .sello img{
-    max-width:45vw;
-  }
-  .marca-central h1{
-    font-size:clamp(1.35rem, 6vw, 1.65rem);
-  }
-  .menu{
-    width:100%;
-    justify-content:space-around;
-    gap:4px;
-  }
-  .menu a{
-    padding:7px 12px 6px;
-    font-size:.94rem;
-  }
-  .onda{height:52px; gap:2px}
-  .portada h2{max-width:100%}
-  .tablero{transform:translateY(20px)}
-  .bloque{padding:16px}
-  .franja{grid-template-columns:1fr; gap:3px}
-}
+  .emisora{padding:8px 12px; gap:8px}
+  .reloj{display:none}
+  .selector-senal-top{flex:1; justify-content:center}
+  .chip-senal{flex:1; justify-content:center; font-size:.82rem; padding:5px 8px}
+  .btn-senal{padding:11px 16px; font-size:1rem}
 
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.001ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.001ms !important;
+  .cabecera{padding:18px 12px}
+  .cabecera-interior{gap:14px 14px}
+  .sello{
+    --alto-logo:clamp(132px, 36vw, 162px);
   }
-  .portada-fondo{transform:scale(1.02)}
-  .entra,.credito{opacity:1; transform:none}
+  .sello-der img{max-width:45vw}
+  .marca-central h1{font-size:clamp(1.38rem, 6vw, 1.7rem)}
+  .menu{width:100%; justify-content:space-around; gap:4px}
+  .menu a{padding:7px 12px 6px; font-size:.94rem}
+
+  .conmutador-modo button{font-size:.9rem; padding:8px 6px}
+  .onda{height:52px; gap:2px}
+  .bloque{padding:15px}
+  .franja{grid-template-columns:1fr; gap:3px}
 }
 </style>
 </head>
 <body>
 
 <!-- ============================================================
-     BARRA DE EMISORA
+     BARRA SUPERIOR INTERACTIVA (CAMBIO DE SEÑAL 24/7 vs EN VIVO)
      ============================================================ -->
 <div class="emisora" id="emisora">
-  <div class="estado"><span class="punto"></span>Al aire</div>
-  <div class="onda-mini" id="ondaMini" aria-hidden="true"></div>
-  <div class="reloj" id="reloj">--:--</div>
-  <button class="btn-senal" id="btnSenal" data-sonando="no">Escuchar la señal</button>
+  <div class="emisora-fila-top">
+    <div class="estado">
+      <span class="punto"></span>
+      <span id="textoEstadoTop">Señal 24/7</span>
+    </div>
+
+    <div class="selector-senal-top" role="group" aria-label="Selector de emisora">
+      <button type="button" class="chip-senal activo" id="chip247" onclick="seleccionarFuenteAudio('247')">
+        🎵 Música 24/7
+      </button>
+      <button type="button" class="chip-senal" id="chipVivo" onclick="seleccionarFuenteAudio('vivo')">
+        🎙️ Radio En Vivo
+      </button>
+    </div>
+
+    <div class="reloj" id="reloj">--:--</div>
+  </div>
+
+  <div class="emisora-fila-play">
+    <button class="btn-senal" id="btnSenal" data-sonando="no">
+      <span class="icono-play-btn" id="iconoBtnSenal">▶</span>
+      <span id="textoBtnSenal">Escuchar Música 24/7</span>
+      <span class="onda-mini" id="ondaMini" aria-hidden="true"></span>
+    </button>
+  </div>
+
   <audio id="senal" preload="none"></audio>
+  <audio id="reproductorJingle" preload="none"></audio>
   <p class="aviso-senal" id="avisoSenal" role="status"></p>
 </div>
 
 <!-- ============================================================
-     ENCABEZADO
+     ENCABEZADO CON MICRÓFONO DINÁMICO + ESCUDO 70 AÑOS
      ============================================================ -->
 <header class="cabecera">
   <div class="cabecera-interior">
-    <div class="sello sello-izq" id="selloLogo">LOGO</div>
 
+    <!-- Logo Izquierdo: Micrófono Circular Dinámico (Imagen o SVG automático) -->
+    <div class="sello sello-izq sello-microfono" id="selloLogo" title="Radio Digital Estudiantil">
+      <div class="svg-mic-dinamico">
+        <svg viewBox="0 0 120 120" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="60" r="54" stroke="#7FE3A8" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
+          <path d="M28 60C28 48 34 38 42 33M92 60C92 48 86 38 78 33" stroke="#7FE3A8" stroke-width="3" stroke-linecap="round"/>
+          <path d="M20 60C20 43 28 29 40 22M100 60C100 43 92 29 80 22" stroke="#2EA96A" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="46" y="26" width="28" height="46" rx="14" fill="url(#gradMic)" stroke="#E2EEF5" stroke-width="3"/>
+          <line x1="48" y1="40" x2="72" y2="40" stroke="#0B3524" stroke-width="2"/>
+          <line x1="48" y1="48" x2="72" y2="48" stroke="#0B3524" stroke-width="2"/>
+          <line x1="48" y1="56" x2="72" y2="56" stroke="#0B3524" stroke-width="2"/>
+          <path d="M36 56C36 69.2548 46.7452 80 60 80C73.2548 80 84 69.2548 84 56" stroke="#D0DCE5" stroke-width="4" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="60" y2="96" stroke="#D0DCE5" stroke-width="4" stroke-linecap="round"/>
+          <line x1="44" y1="96" x2="76" y2="96" stroke="#7FE3A8" stroke-width="4" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="gradMic" x1="46" y1="26" x2="74" y2="72" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FFFFFF"/>
+              <stop offset="0.5" stop-color="#7FE3A8"/>
+              <stop offset="1" stop-color="#14603C"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Título Central y Navegación -->
     <div class="marca-central">
+      <span class="etiqueta-aniversario">70 Años — Bodas de Titanio</span>
       <h1>U.E. Gran Mariscal de Ayacucho</h1>
-      <p>Radio digital estudiantil</p>
+      <p>Radio Digital &amp; Medios Estudiantiles</p>
       <nav class="menu">
         <a href="#en-vivo">En vivo</a>
         <a href="#parrilla">Horarios</a>
@@ -742,7 +1023,9 @@ body > *{position:relative; z-index:1}
       </nav>
     </div>
 
+    <!-- Logo Derecho: Escudo 70 Años Bodas de Titanio (Plata/Verde) -->
     <div class="sello sello-der" id="selloEscudo">ESCUDO</div>
+
   </div>
 </header>
 
@@ -760,51 +1043,74 @@ body > *{position:relative; z-index:1}
 <section class="portada">
   <div class="portada-fondo" id="portadaFondo"></div>
   <div class="portada-interior">
-    <h2 class="entra" data-orden="1">La voz del colegio, en línea</h2>
-    <p class="bajada entra" data-orden="2">Transmisión en vivo y contenidos audiovisuales producidos por estudiantes y docentes de la unidad educativa.</p>
+    <h2>La voz del colegio, en línea</h2>
+    <p class="bajada">Transmisión en vivo mediante, TikTok Live y radio continua 24/7 producida por estudiantes y docentes de la unidad educativa.</p>
 
-    <div class="onda entra" data-orden="3" id="onda" aria-hidden="true"></div>
+    <div class="onda" id="onda" aria-hidden="true"></div>
 
-    <dl class="tablero entra" data-orden="4">
+    <dl class="tablero">
       <div class="tablero-celda">
         <dt>Ahora</dt>
-        <dd id="bloqueActual">Fuera de horario<small id="bloqueActualHora">La señal continua sigue disponible</small></dd>
+        <dd id="bloqueActual">Fuera de horario<small id="bloqueActualHora">Música 24/7 activa en automático</small></dd>
       </div>
       <div class="tablero-celda">
         <dt>A continuación</dt>
         <dd id="bloqueSiguiente">—<small id="bloqueSiguienteHora">&nbsp;</small></dd>
       </div>
       <div class="tablero-celda">
-        <dt>Canales</dt>
-        <dd>Tres<small>TikTok, YouTube y Kick</small></dd>
+        <dt>Plataformas</dt>
+        <dd>Multicanal<small>, TikTok, YouTube, Kick y Zeno.fm</small></dd>
       </div>
     </dl>
   </div>
 </section>
 
 <!-- ============================================================
-     CUERPO
+     CUERPO PRINCIPAL
      ============================================================ -->
 <div class="contenedor">
 
   <main id="en-vivo">
     <div class="bloque">
       <div class="bloque-titulo">
-        <h3>Transmisión multicanal</h3>
-        <span>Elige el canal donde quieres ver la emisión</span>
+        <h3>Centro de Transmisión Digital</h3>
+        <span>Alterna entre Video en Vivo y Cabina de Audio</span>
       </div>
 
-      <div class="canales" role="tablist" aria-label="Canales de transmisión">
-        <button class="canal" role="tab" aria-selected="true"  data-canal="tiktok">TikTok</button>
+      <!-- Conmutador entre Pantalla de Video y Consola de Audio -->
+      <div class="conmutador-modo">
+        <button type="button" id="btnModoVideo" class="activo" onclick="cambiarModoPantalla('video')">
+          📺 Video En Vivo (OBS / Redes)
+        </button>
+        <button type="button" id="btnModoRadio" onclick="cambiarModoPantalla('radio')">
+          🎙️ Consola de Radio (24/7 / Vivo)
+        </button>
+      </div>
+
+      <!-- Pestañas de Canales de Video -->
+      <div class="canales" id="grupoCanales" role="tablist" aria-label="Canales de transmisión">
+        <button class="canal" role="tab" aria-selected="true"  data-canal="tiktok">TikTok Live</button>
+        <button class="canal" role="tab" aria-selected="false" data-canal="obs">📡 Señal OBS</button>
         <button class="canal" role="tab" aria-selected="false" data-canal="youtube">YouTube</button>
         <button class="canal" role="tab" aria-selected="false" data-canal="kick">Kick</button>
       </div>
 
+      <!-- Pantalla Principal -->
       <div class="pantalla" id="pantalla"></div>
 
       <div class="pie-pantalla">
-        <span>Canal en pantalla: <b id="canalActual">TikTok</b></span>
-        <span>Emisión oficial de la unidad educativa</span>
+        <span>Canal activo: <b id="canalActual">TikTok Live</b></span>
+        <span>U.E. Gran Mariscal de Ayacucho — Huanuni</span>
+      </div>
+
+      <!-- Botonera Rápida de Jingles Institucionales -->
+      <div class="jingles-caja">
+        <span class="jingles-titulo">🔊 Jingles y Cortinas:</span>
+        <div class="jingles-botones">
+          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle1')">⚡ Identificador Radio</button>
+          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle2')">🦅 70 Años Titanio</button>
+          <button type="button" class="btn-jingle" onclick="tocarJingle('jingle3')">🎵 Cortina Estudiantil</button>
+        </div>
       </div>
     </div>
   </main>
@@ -812,7 +1118,7 @@ body > *{position:relative; z-index:1}
   <aside>
     <div class="bloque" id="parrilla">
       <div class="bloque-titulo">
-        <h3>Horarios</h3>
+        <h3>Horarios de Cabina</h3>
       </div>
       <div id="listaFranjas"></div>
     </div>
@@ -831,13 +1137,13 @@ body > *{position:relative; z-index:1}
     </div>
     <div class="credito">
       <h4>Docentes colaboradores</h4>
-      <p>Plantel docente participante de la unidad educativa.</p>
+      <p>Plantel docente y club de comunicación de la unidad educativa.</p>
     </div>
     <div class="credito">
       <h4>Soporte técnico y desarrollo</h4>
       <ul>
         <li>Equipo de ingeniería en sistemas</li>
-        <li>Producción y operación de la señal</li>
+        <li>Producción y operación de señal OBS / Zeno.fm</li>
       </ul>
     </div>
   </div>
@@ -853,83 +1159,86 @@ body > *{position:relative; z-index:1}
 
 <script>
 /* ==============================================================
-   CONFIGURACIÓN — LO ÚNICO QUE DEBES EDITAR
+   CONFIGURACIÓN CENTRAL — LISTA PARA GITHUB Y OBS
    ==============================================================
-   Sube las imágenes a tu repositorio de GitHub y pega aquí la ruta.
-
-   OPCIÓN A (recomendada, si usas GitHub Pages):
-     ruta relativa dentro del repositorio.
-     Ejemplo de forma: "img/logo.png"
-
-   OPCIÓN B (enlace directo desde GitHub):
-     abre el archivo en GitHub, botón "Raw", y copia la barra
-     de direcciones. Tiene esta forma:
-     https://raw.githubusercontent.com/USUARIO/REPOSITORIO/main/img/logo.png
-
-   Si dejas un campo vacío (""), la página sigue funcionando y
-   muestra un marcador de posición en su lugar.
+   Aquí solo pegas tus enlaces o nombres de archivo cuando los tengas.
    ============================================================== */
 const CONFIG = {
 
-  /* --- Imágenes --- */
-  logo:   "logo colegio 6.png",   // logo del proyecto de radio
-  escudo: "logo colegio 3.png",   // escudo institucional
-  fondo:  "frontis del colegio 4.png",   // fotografía de fondo de la portada //https://stream.zeno.fm/5dfkzqm70s8uv//latinareggaeton.ice.infomaniak.ch/latinareggaeton.mp3//
+  /* --- 1. Imágenes del Encabezado y Portada --- */
+  logo:   "logo-microfono.png",       // Imagen del micrófono (se recorta en círculo automáticamente)
+  escudo: "logo colegio 3.png",       // Escudo 70 Años Bodas de Titanio (derecha)
+  fondo:  "frontis del colegio 4.png",// Fotografía de fondo del colegio
 
-  /* --- Señal de audio continua (URL del streaming .mp3 / .aac) --- */
-  audio:  "https://stream.zeno.fm/5dfkzqm70s8uv",
-  /* --- Enlaces de video en vivo --- */
-  tiktok:  "",  // https://www.tiktok.com/player/v1/live?username=TU_USUARIO
-  youtube: "",  // https://www.youtube.com/embed/live_stream?channel=ID_DEL_CANAL
-  kick:    "",  // https://player.kick.com/TU_CANAL
+  /* --- 2. Señales de Radio (Zeno.fm 24/7 y Cabina En Vivo OBS) ---
+     Nota: Si transmites desde OBS directo a tu cuenta de Zeno.fm,
+     ambos enlaces pueden llevar la misma URL de Zeno.fm. */
+  audio24_7:   "https://stream.zeno.fm/5dfkzqm70s8uv", // Música continua 24/7
+  audioEnVivo: "https://stream.zeno.fm/5dfkzqm70s8uv", // Señal cuando el colegio transmite en vivo por OBS
 
-  /* --- Horarios de transmisión --- */
+  /* --- 3. Enlaces de Video En Vivo (OBS / Redes Sociales) --- */
+  tiktok:  "", // Ejemplo: "https://www.tiktok.com/player/v1/live?username=TU_USUARIO"
+  obs:     "", // Enlace embed de tu transmisión OBS (YouTube Embed, Twitch, Restream o archivo .m3u8)
+  youtube: "", // Ejemplo: "https://www.youtube.com/embed/live_stream?channel=ID_DEL_CANAL"
+  kick:    "", // Ejemplo: "https://player.kick.com/TU_CANAL"
+
+  /* --- 4. Archivos de Jingles Institucionales (Opcional, rutas .mp3 en tu GitHub) --- */
+  jingles: {
+    jingle1: "jingle-identificador.mp3",
+    jingle2: "jingle-70-anios.mp3",
+    jingle3: "jingle-cortina.mp3"
+  },
+
+  /* --- 5. Horarios Oficiales de Emisión --- */
   horarios: [
-    { inicio:"08:30", fin:"10:00", nombre:"Bloque mañana" },
-    { inicio:"10:15", fin:"12:00", nombre:"Bloque medio día" },
-    { inicio:"14:30", fin:"16:00", nombre:"Bloque tarde" }
+    { inicio:"08:30", fin:"10:00", nombre:"Bloque mañana — Recreo y Noticias" },
+    { inicio:"10:15", fin:"12:00", nombre:"Bloque medio día — Voces Ayacuchenses" },
+    { inicio:"14:30", fin:"16:00", nombre:"Bloque tarde — Cultura y Juventud" }
   ],
 
-  /* --- Textos del cintillo --- */
+  /* --- 6. Mensajes del Cintillo --- */
   cintillo: [
     "Plataforma oficial de transmisión de la <b>Unidad Educativa Gran Mariscal de Ayacucho</b>",
-    "Emisión simultánea en <b>TikTok</b>, <b>YouTube</b> y <b>Kick</b>",
-    "Producción a cargo de estudiantes y docentes"
+    "Escucha nuestra <b>Música 24/7</b> o conéctate a la <b>Cabina En Vivo</b>",
+    "Emisión simultánea mediante <b>OBS Studio</b>, <b>TikTok</b>, <b>YouTube</b> y <b>Kick</b>"
   ]
 };
 
 /* ==============================================================
-   A PARTIR DE AQUÍ NO ES NECESARIO MODIFICAR NADA
+   LÓGICA DEL SISTEMA (NO NECESITAS MODIFICAR NADA ABAJO)
    ============================================================== */
 (function(){
   "use strict";
 
   const $  = (s)=>document.querySelector(s);
   const $$ = (s)=>Array.from(document.querySelectorAll(s));
-  const menosMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- Imágenes con respaldo ---------- */
-  function ponerImagen(contenedor, ruta, etiqueta){
+  /* ---------- Carga de Imágenes con Respaldo Automático ---------- */
+  function ponerImagen(contenedor, ruta, etiqueta, mantenerFallbackSVG){
     if(!ruta) return;
     const img = new Image();
     img.alt = etiqueta;
     img.src = ruta;
     img.onload = ()=>{
-      contenedor.textContent = "";
+      contenedor.innerHTML = "";
       contenedor.appendChild(img);
       contenedor.classList.add("con-imagen");
     };
     img.onerror = ()=>{
-      contenedor.textContent = etiqueta;
-      contenedor.classList.remove("con-imagen");
+      if(!mantenerFallbackSVG){
+        contenedor.textContent = etiqueta;
+        contenedor.classList.remove("con-imagen");
+      }
     };
   }
-  ponerImagen($("#selloLogo"),   CONFIG.logo,   "LOGO");
-  ponerImagen($("#selloEscudo"), CONFIG.escudo, "ESCUDO");
+
+  // En el micrófono, si aún no subes "logo-microfono.png", conserva el micrófono SVG animado
+  ponerImagen($("#selloLogo"),   CONFIG.logo,   "RADIO DIGITAL", true);
+  ponerImagen($("#selloEscudo"), CONFIG.escudo, "70 AÑOS",       false);
   if(CONFIG.fondo) $("#portadaFondo").style.backgroundImage = `url('${CONFIG.fondo}')`;
 
-  /* ---------- Cintillo (duplicado para giro continuo) ---------- */
-  (function cintillo(){
+  /* ---------- Cintillo Continuo ---------- */
+  (function iniciarCintillo(){
     const pista = $("#cintilloPista");
     const texto = CONFIG.cintillo.map(t=>`<span class="cintillo-item">${t}</span>`).join("");
     for(let i=0;i<2;i++){
@@ -941,7 +1250,7 @@ const CONFIG = {
     }
   })();
 
-  /* ---------- Reloj ---------- */
+  /* ---------- Reloj en Tiempo Real ---------- */
   const reloj = $("#reloj");
   function verHora(){
     const d = new Date();
@@ -951,7 +1260,7 @@ const CONFIG = {
   }
   verHora(); setInterval(verHora,1000);
 
-  /* ---------- Horarios y bloque en curso ---------- */
+  /* ---------- Horarios ---------- */
   const enMinutos = (hhmm)=>{ const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
 
   function pintarHorarios(){
@@ -969,7 +1278,7 @@ const CONFIG = {
         <div class="franja" data-activa="${activa?"si":"no"}">
           <span class="franja-hora">${b.inicio} — ${b.fin}</span>
           <span class="franja-nombre">${b.nombre}
-            <span class="franja-marca">${activa ? "En emisión" : "Programado"}</span>
+            <span class="franja-marca">${activa ? "🔴 En emisión ahora" : "Programado"}</span>
           </span>
         </div>`;
     }).join("");
@@ -978,8 +1287,8 @@ const CONFIG = {
       $("#bloqueActual").firstChild.nodeValue = actual.nombre;
       $("#bloqueActualHora").textContent = actual.inicio+" a "+actual.fin;
     }else{
-      $("#bloqueActual").firstChild.nodeValue = "Fuera de horario";
-      $("#bloqueActualHora").textContent = "La señal continua sigue disponible";
+      $("#bloqueActual").firstChild.nodeValue = "Música Continua 24/7";
+      $("#bloqueActualHora").textContent = "Señal automática Zeno.fm activa";
     }
 
     const prox = siguiente || CONFIG.horarios[0];
@@ -989,56 +1298,57 @@ const CONFIG = {
   pintarHorarios();
   setInterval(pintarHorarios, 30000);
 
-  /* ---------- Ondas ---------- */
+  /* ---------- Animación de Ondas de Sonido ---------- */
   const onda     = $("#onda");
   const ondaMini = $("#ondaMini");
-  const BARRAS = 44, BARRAS_MINI = 5;
+  const BARRAS = 42, BARRAS_MINI = 5;
 
   for(let i=0;i<BARRAS;i++)      onda.appendChild(document.createElement("i"));
   for(let i=0;i<BARRAS_MINI;i++) ondaMini.appendChild(document.createElement("i"));
 
   const barras     = $$("#onda i");
   const barrasMini = $$("#ondaMini i");
-  let sonando = false, t = 0, cuadro = null;
+  let sonando = false, t = 0;
 
   function animarOndas(){
-    t += sonando ? 0.09 : 0.028;
-    const fuerza = sonando ? 1 : 0.32;
+    t += sonando ? 0.11 : 0.028;
+    const fuerza = sonando ? 1 : 0.28;
 
     barras.forEach((b,i)=>{
       const v = Math.sin(t + i*0.42) * 0.5
               + Math.sin(t*1.73 + i*0.19) * 0.32
               + Math.sin(t*0.61 + i*0.87) * 0.18;
-      const alto = 0.1 + Math.abs(v) * 0.9 * fuerza;
+      const alto = 0.12 + Math.abs(v) * 0.88 * fuerza;
       b.style.transform = "scaleY("+alto.toFixed(3)+")";
     });
 
     barrasMini.forEach((b,i)=>{
-      const v = Math.abs(Math.sin(t*1.5 + i*0.9));
-      b.style.transform = "scaleY("+(0.2 + v*0.8*fuerza).toFixed(3)+")";
+      const v = Math.abs(Math.sin(t*1.6 + i*0.85));
+      b.style.transform = "scaleY("+(0.22 + v*0.78*fuerza).toFixed(3)+")";
     });
 
-    cuadro = requestAnimationFrame(animarOndas);
+    const radioBarras = $$(".radio-onda i");
+    if(radioBarras.length){
+      radioBarras.forEach((rb,i)=>{
+        const v = Math.abs(Math.sin(t*1.4 + i*0.55)) * (sonando ? 1 : 0.2);
+        rb.style.transform = "scaleY(" + Math.max(0.15, v).toFixed(3) + ")";
+      });
+    }
+
+    requestAnimationFrame(animarOndas);
   }
+  animarOndas();
 
-  if(!menosMovimiento){
-    animarOndas();
-    document.addEventListener("visibilitychange", ()=>{
-      if(document.hidden){ cancelAnimationFrame(cuadro); cuadro = null; }
-      else if(!cuadro){ animarOndas(); }
-    });
-  }else{
-    barras.forEach(b=>b.style.transform="scaleY(.45)");
-    barrasMini.forEach(b=>b.style.transform="scaleY(.5)");
-  }
+  /* ---------- Control de Audio (Música 24/7 vs Radio En Vivo) ---------- */
+  const audio     = $("#senal");
+  const btnSenal  = $("#btnSenal");
+  const txtBtn    = $("#textoBtnSenal");
+  const icoBtn    = $("#iconoBtnSenal");
+  const aviso     = $("#avisoSenal");
+  let fuenteAudio = "247"; // '247' o 'vivo'
 
-  /* ---------- Reproductor de la señal ---------- */
-  const audio = $("#senal");
-  const btn   = $("#btnSenal");
-  const aviso = $("#avisoSenal");
-
-  function mostrarAviso(texto){
-    aviso.textContent = texto;
+  function mostrarAviso(msg){
+    aviso.textContent = msg;
     aviso.classList.add("visible");
   }
   function limpiarAviso(){
@@ -1046,88 +1356,179 @@ const CONFIG = {
     aviso.classList.remove("visible");
   }
 
-  function estadoReproduciendo(activo){
-    sonando = activo;
-    btn.dataset.sonando = activo ? "si" : "no";
-    btn.textContent = activo ? "Detener la señal" : "Escuchar la señal";
-    $("#emisora").classList.toggle("sonando", activo);
+  function obtenerUrlAudioActual(){
+    return fuenteAudio === "vivo"
+      ? (CONFIG.audioEnVivo || CONFIG.audio24_7)
+      : CONFIG.audio24_7;
   }
 
-  btn.addEventListener("click", ()=>{
-    if(!CONFIG.audio){
-      mostrarAviso("Falta configurar la dirección del streaming en el campo «audio».");
+  function nombreFuenteActual(){
+    return fuenteAudio === "vivo"
+      ? "Radio Cabina En Vivo"
+      : "Música 24/7";
+  }
+
+  function actualizarUIReproduccion(activo){
+    sonando = activo;
+    btnSenal.dataset.sonando = activo ? "si" : "no";
+    document.body.classList.toggle("reproduciendo-audio", activo);
+    icoBtn.textContent = activo ? "⏹" : "▶";
+    txtBtn.textContent = activo
+      ? "Detener " + nombreFuenteActual()
+      : "Escuchar " + nombreFuenteActual();
+
+    const disco = $("#panelDisco");
+    const estadoPanel = $("#labelRadioEstado");
+    if(disco) disco.classList.toggle("tocando", activo);
+    if(estadoPanel){
+      estadoPanel.textContent = activo
+        ? "🔊 Reproduciendo ahora: " + nombreFuenteActual()
+        : "Presiona el micrófono central o el botón superior para escuchar";
+    }
+  }
+
+  window.seleccionarFuenteAudio = function(nuevaFuente){
+    fuenteAudio = nuevaFuente;
+    $("#chip247").classList.toggle("activo", nuevaFuente === "247");
+    $("#chipVivo").classList.toggle("activo", nuevaFuente === "vivo");
+    $("#textoEstadoTop").textContent = nuevaFuente === "vivo" ? "Cabina En Vivo" : "Señal 24/7";
+
+    const url = obtenerUrlAudioActual();
+    audio.src = url;
+    txtBtn.textContent = "Conectando a " + nombreFuenteActual() + "…";
+
+    audio.play().then(()=>{
+      limpiarAviso();
+      actualizarUIReproduccion(true);
+    }).catch(()=>{
+      actualizarUIReproduccion(false);
+    });
+
+    if(modoPantalla === "radio") renderizarConsolaRadio();
+  };
+
+  function alternarReproduccion(){
+    const url = obtenerUrlAudioActual();
+    if(!url){
+      mostrarAviso("Configura la URL del streaming en CONFIG.");
       return;
     }
-    if(!audio.src) audio.src = CONFIG.audio;
+    if(audio.src !== url) audio.src = url;
 
     if(audio.paused){
-      btn.textContent = "Conectando…";
+      txtBtn.textContent = "Conectando señal…";
       audio.play().then(()=>{
         limpiarAviso();
-        estadoReproduciendo(true);
+        actualizarUIReproduccion(true);
       }).catch(()=>{
-        estadoReproduciendo(false);
-        mostrarAviso("No se pudo conectar con la señal. Revisa la dirección del streaming.");
+        actualizarUIReproduccion(false);
+        mostrarAviso("No se pudo conectar con el servidor de audio. Verifica la señal.");
       });
     }else{
       audio.pause();
-      estadoReproduciendo(false);
+      actualizarUIReproduccion(false);
     }
-  });
-
-  audio.addEventListener("pause", ()=>estadoReproduciendo(false));
-  audio.addEventListener("playing", ()=>estadoReproduciendo(true));
-  audio.addEventListener("error", ()=>{
-    estadoReproduciendo(false);
-    mostrarAviso("La señal no está disponible en este momento.");
-  });
-
-  /* ---------- Canales de video ---------- */
-  const NOMBRES = { tiktok:"TikTok", youtube:"YouTube", kick:"Kick" };
-  const pantalla = $("#pantalla");
-
-  function verCanal(canal){
-    const url = CONFIG[canal];
-    if(url){
-      pantalla.innerHTML =
-        '<iframe src="'+url+'" title="Transmisión en vivo en '+NOMBRES[canal]+'" '+
-        'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
-    }else{
-      pantalla.innerHTML =
-        '<div class="pantalla-vacia"><strong>Canal sin configurar</strong>'+
-        '<span>Pega la dirección de la transmisión de '+NOMBRES[canal]+
-        ' en el campo «'+canal+'» de la configuración.</span></div>';
-    }
-    $("#canalActual").textContent = NOMBRES[canal];
   }
+
+  btnSenal.addEventListener("click", alternarReproduccion);
+  audio.addEventListener("playing", ()=>actualizarUIReproduccion(true));
+  audio.addEventListener("pause",   ()=>actualizarUIReproduccion(false));
+
+  /* ---------- Jingles Institucionales ---------- */
+  const audioJingle = $("#reproductorJingle");
+  window.tocarJingle = function(clave){
+    const ruta = CONFIG.jingles && CONFIG.jingles[clave];
+    if(!ruta){
+      mostrarAviso("Sube el archivo MP3 del jingle a tu repositorio para reproducirlo.");
+      return;
+    }
+    limpiarAviso();
+    audioJingle.src = ruta;
+    audioJingle.play().catch(()=>{
+      mostrarAviso("Sube el archivo «" + ruta + "» a tu repositorio de GitHub para sonar este jingle.");
+    });
+  };
+
+  /* ---------- Conmutador de Pantalla (Video OBS/Redes vs Consola de Radio) ---------- */
+  const NOMBRES_CANALES = {
+    tiktok:  "TikTok Live",
+    obs:     "Señal Directa OBS",
+    youtube: "YouTube Live",
+    kick:    "Kick Live"
+  };
+
+  const pantalla = $("#pantalla");
+  let canalVideoActual = "tiktok";
+  let modoPantalla = "video";
+
+  window.cambiarModoPantalla = function(modo){
+    modoPantalla = modo;
+    $("#btnModoVideo").classList.toggle("activo", modo === "video");
+    $("#btnModoRadio").classList.toggle("activo", modo === "radio");
+    $("#grupoCanales").style.display = modo === "video" ? "flex" : "none";
+
+    if(modo === "video"){
+      verCanalVideo(canalVideoActual);
+    }else{
+      renderizarConsolaRadio();
+    }
+  };
+
+  function verCanalVideo(canal){
+    canalVideoActual = canal;
+    const url = CONFIG[canal];
+    $("#canalActual").textContent = NOMBRES_CANALES[canal] || canal;
+
+    if(url){
+      if(url.endsWith(".m3u8") || url.endsWith(".mp4")){
+        pantalla.innerHTML = `<video src="${url}" controls autoplay playsinline></video>`;
+      }else{
+        pantalla.innerHTML =
+          `<iframe src="${url}" title="Transmisión en ${NOMBRES_CANALES[canal]}" `+
+          `allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+      }
+    }else{
+      pantalla.innerHTML = `
+        <div class="pantalla-vacia">
+          <strong>${NOMBRES_CANALES[canal]} — En espera de emisión</strong>
+          <span>Cuando inicies transmisión en vivo desde OBS o ${NOMBRES_CANALES[canal]}, pega el enlace en CONFIG.${canal}. Mientras tanto, disfruta nuestra señal de audio continua.</span>
+          <button type="button" class="btn-ir-radio" onclick="cambiarModoPantalla('radio'); seleccionarFuenteAudio('247');">
+            🎵 Escuchar Música 24/7 Ahora
+          </button>
+        </div>`;
+    }
+  }
+
+  function renderizarConsolaRadio(){
+    $("#canalActual").textContent = nombreFuenteActual();
+    pantalla.innerHTML = `
+      <div class="radio-dashboard">
+        <div class="radio-disco ${sonando ? "tocando" : ""}" id="panelDisco" onclick="ocarDesdeConsola()">
+          <span style="font-size:2.4rem">🎙️</span>
+        </div>
+        <div class="radio-info">
+          <h4>${fuenteAudio === "vivo" ? "Cabina U.E. Gran Mariscal de Ayacucho" : "Radio Digital — Música Continua 24/7"}</h4>
+          <p id="labelRadioEstado">${sonando ? "🔊 Reproduciendo ahora: " + nombreFuenteActual() : "Toca el micrófono para reproducir la señal"}</p>
+          <div class="radio-onda">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  window.ocarDesdeConsola = function(){
+    alternarReproduccion();
+  };
 
   $$(".canal").forEach(b=>{
     b.addEventListener("click", ()=>{
       $$(".canal").forEach(o=>o.setAttribute("aria-selected","false"));
       b.setAttribute("aria-selected","true");
-      verCanal(b.dataset.canal);
+      verCanalVideo(b.dataset.canal);
     });
   });
-  verCanal("tiktok");
 
-  /* ---------- Aparición de créditos ---------- */
-  if("IntersectionObserver" in window && !menosMovimiento){
-    const obs = new IntersectionObserver((entradas)=>{
-      entradas.forEach((e,i)=>{
-        if(e.isIntersecting){
-          setTimeout(()=>e.target.classList.add("visible"), i*110);
-          obs.unobserve(e.target);
-        }
-      });
-    },{threshold:.2});
-    $$(".credito").forEach(c=>obs.observe(c));
-  }else{
-    $$(".credito").forEach(c=>c.classList.add("visible"));
-  }
-
-  /* ---------- Entrada de la portada ---------- */
-  requestAnimationFrame(()=>document.body.classList.add("cargado"));
-
+  verCanalVideo("tiktok");
 })();
 </script>
 
